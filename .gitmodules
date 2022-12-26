@@ -1,0 +1,6 @@
+[submodule "extLibs/googletest"]
+	path = extLibs/googletest
+	url = https://github.com/google/googletest.git
+[submodule "extLibs/VTK"]
+	path = extLibs/VTK
+	url = https://github.com/Kitware/VTK
