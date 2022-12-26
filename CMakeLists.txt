@@ -215,6 +215,7 @@ set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 #Add the version_file to the project build.
 # generating executable program by specifying the location of the file
 add_executable(${Project} src/main.cpp ${version_file})
+add_executable(${Project}_example src/example.cpp)
 set_target_properties(${Project} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
 
 target_link_libraries(${Project} ${ProjectLib} -static-libgcc -static-libstdc++)
