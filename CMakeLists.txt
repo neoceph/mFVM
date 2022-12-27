@@ -215,18 +215,17 @@ set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 #Add the version_file to the project build.
 # generating executable program by specifying the location of the file
 add_executable(${Project} src/main.cpp ${version_file})
-add_executable(${Project}_example src/example.cpp)
+add_executable(${Project}_example src/sources/executableSample_1.cpp)
 set_target_properties(${Project} PROPERTIES LINK_FLAGS "-Wl,-rpath,./")
 
-target_link_libraries(${Project} ${ProjectLib} -static-libgcc -static-libstdc++)
-
+target_link_libraries(${Project} ${ProjectLib})
+# target_link_libraries(${Project} -static-libgcc -static-libstdc++)
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
 
 # specifying install rules for dependency libraries
-# target_link_libraries(${Project} -static-libgcc -static-libstdc++)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/dependencies/lib DESTINATION .)
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
