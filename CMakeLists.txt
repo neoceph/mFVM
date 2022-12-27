@@ -13,6 +13,9 @@ string(JSON Document_Generation GET ${CMakeSetup_STRING} 0 DocumentGeneration)
 set(Project ${Project_NAME})
 set(ProjectLib ${Project}_lib)
 
+set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
+set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+
 # settting the project name.
 project(${Project} C CXX)
 
