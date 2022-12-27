@@ -1,18 +1,13 @@
-// standard headers
-#include <iostream>
+#include<iostream>
 
-// user defined headers
-#include <Mesh.h>
-#include <Example.hpp>
-
+#include "version.h"
 
 using namespace std;
 
-int main(int arg, char *argv[])
+int main (int arg, char *argv[])
 {
-
-
-    cout << "Hello World" << endl;
+    int array[3] = {0, 1, 2};
+    cout << "Hello World!\n";
+    std::cout << gGIT_VERSION << std::endl << gGIT_VERSION_SHORT << std::endl;
     
-    return 0;
-}//end main
+}
