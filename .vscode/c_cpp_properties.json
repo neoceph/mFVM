@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",            
+            "includePath": [
+                "${workspaceFolder}/src/**",
+                "/home/nirjhor/Software/vcpkg/installed/x64-linux/include/**"
+            ]
+        }
+    ],
+    "version": 4
+}

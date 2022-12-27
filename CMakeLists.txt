@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
-set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "TEST") 
+# set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "TEST") 
+
 
 # Read the JSON file. JSON file contains all information regarding project titles and named variables including developers.
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/CMakeSetup.json CMakeSetup_STRING)
@@ -83,15 +84,15 @@ add_executable(
     ${Project} src/main.cpp  ${version_file}
     )
 add_executable(
-    vtkExample src/sources/Tutorial_Step1.cpp
+    vtkExample src/sources/write.cpp
 )
 
 add_subdirectory(src)
 
-target_link_directories(vtkExample PRIVATE src/)
+target_link_directories(vtkExample PUBLIC src/)
 
-target_link_libraries(vtkExample PRIVATE ${VTK_LIBRARIES} ${ProjectLib})
-target_link_libraries(${Project} PRIVATE ${VTK_LIBRARIES} ${ProjectLib})
+target_link_libraries(vtkExample PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
+target_link_libraries(${Project} PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
 
  
 

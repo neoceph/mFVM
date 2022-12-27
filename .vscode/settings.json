@@ -2,7 +2,14 @@
     "makefile.extensionOutputFolder": "./.vscode",
     // "cmake.buildDirectory": "${workspaceFolder}/build/${buildKit}/${buildType}"
     // "cmake.buildDirectory": "${workspaceFolder}/build/${variant:buildTarget}-${variant:buildOpt}"
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      },
     "cmake.generator": "Unix Makefiles",
     "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "dense": "cpp",
+        "eigenvalues": "cpp"
+    }
 }

@@ -14,6 +14,6 @@ add_library(
     ${HEADERS}
     )
 
-target_link_libraries(${SubProject} PRIVATE ${VTK_LIBRARIES})
+target_link_libraries(${SubProject} PUBLIC ${VTK_LIBRARIES})
 
 install(TARGETS ${SubProject} DESTINATION lib)
