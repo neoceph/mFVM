@@ -3,6 +3,7 @@
     // "cmake.buildDirectory": "${workspaceFolder}/build/${buildKit}/${buildType}"
     // "cmake.buildDirectory": "${workspaceFolder}/build/${variant:buildTarget}-${variant:buildOpt}"
     "cmake.configureSettings": {
+        // "CMAKE_TOOLCHAIN_FILE": "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake"
         "CMAKE_TOOLCHAIN_FILE": "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake"
       },
     "cmake.generator": "Unix Makefiles",
