@@ -8,20 +8,6 @@
 - Doxygen 1.9.4 and above
     -`sudo apt update` 
     - `sudo apt install doxygen`
-- GraphViz required if class UML diagram generation is desired
-    - `sudo apt install graphviz`
-    - Settings on the Doxyfile that needs to changes are 
-        - HIDE_UNDOC_RELATIONS = NO #YES
-        - HAVE_DOT = YES #NO
-        - UML_LOOK = YES #NO
-        - UML_LIMIT_NUM_FIELDS = 50 #10
-        - TEMPLATE_RELATIONS = YES #NO
-        - CALL_GRAPH = YES #NO
-        - CALLER_GRAPH = YES #NO
-        - DOT_IMAGE_FORMAT = svg #png
-        - INTERACTIVE_SVG = YES #NO
-        - DOT_GRAPH_MAX_NODES = 100 #50
-        - DOT_TRANSPARENT = YES #NO
 - Sphinx 4.4.0 and above
     `sudo apt-get install python3-sphinx`
 - Sphinx readthedocs theme
@@ -31,7 +17,6 @@
     - `pip3 install sphinx-sitemap`
 - Latexmk (required for pdf generation)
     - If not available can be installed with `sudo apt-get update -y` and next `sudo apt-get install -y latexmk`
-    - If object inheritance is used, epstopdf might be required. In such cases texlive-font-utils are required which can be installed using `sudo apt-get install texlive-font-utils`
     - For .sty file not found use `apt install texlive-latex-extra`
 - Rpmbuild (required for .rpm package generation) 
     - Creating rpm will require an rpmbuild executable. To get rpm installed issue `sudo apt-get install rpm`
@@ -61,4 +46,5 @@
 - Under the doc/usermanual directory issuing `make html` will generate html documentation under doc/readthedocs/_build/html directory
 - `make latexpdf` will generate pdf documentation under doc/readthedocs/_build/latex directory
 
-    
+## Readthedocs documentation
+Readthedocs documentation contains details of how to work with AM-CFD. The documnetation is hosted in [here].(https://am-cfd.readthedocs.io/en/latest/)

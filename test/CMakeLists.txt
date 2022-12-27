@@ -6,6 +6,7 @@ set(Sources
 
 add_executable(${ProjectTest} ${Sources})
 
+
 target_link_libraries(
     ${ProjectTest}
     PUBLIC ${CMAKE_PROJECT_NAME}_lib
@@ -16,4 +17,3 @@ add_test(
     NAME ${ProjectTest}
     COMMAND ${ProjectTest}
 )
-
