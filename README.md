@@ -1,8 +1,6 @@
-# Northwestern AM-CFD Code (C++) 
+# multiphase FVM solver for laser powder bed Additive Manufacturing problems (C++) 
 BetaVersion
 Developed by Abdullah Al Amin. email: abdullah.amin@northwestern.edu 
-
-Initially started by Kevontrez Jones and Zhengtao Gan
 
 ## Installation 
 ---
