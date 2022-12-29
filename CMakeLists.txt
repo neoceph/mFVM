@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
 # set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "TEST") 
 
+execute_process(COMMAND which vcpkg OUTPUT_VARIABLE VCPKG_COMMAND_PATH)
+string(REGEX REPLACE "vcpkg\n" "" VCPKG_PATH "${VCPKG_COMMAND_PATH}")
+set(VCPKG_TOOLCHAIN_PATH ${VCPKG_PATH}scripts/buildsystems/vcpkg.cmake)
+message("vcpkg path: "${VCPKG_TOOLCHAIN_PATH})
+set(CMAKE_TOOLCHAIN_FILE ${VCPKG_TOOLCHAIN_PATH} CACHE STRING "TEST") 
 
 # Read the JSON file. JSON file contains all information regarding project titles and named variables including developers.
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/CMakeSetup.json CMakeSetup_STRING)
