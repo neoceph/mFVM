@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
-# set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "TEST") 
 
+
+# setting up the vcpkg toolpath. 
 execute_process(COMMAND which vcpkg OUTPUT_VARIABLE VCPKG_COMMAND_PATH)
 string(REGEX REPLACE "vcpkg\n" "" VCPKG_PATH "${VCPKG_COMMAND_PATH}")
 set(VCPKG_TOOLCHAIN_PATH ${VCPKG_PATH}scripts/buildsystems/vcpkg.cmake)

@@ -1,4 +1,8 @@
 #include<iostream>
+#include<map>
+#include<list>
+#include<vector>
+#include<string>
 
 #include "version.h"
 #include "Eigen/Dense"
@@ -11,7 +15,21 @@ int main (int arg, char *argv[])
     m(1,0) = 2.5;
     m(0,1) = -1;
     m(1,1) = m(1,0) + m(0,1);
-    
+
+    std::string s {"Test String"};
+    std::vector<double> v (3, 3.14);
+    std::list<int> l;
+
+    l.push_back(3);
+    l.push_back(1);
+    l.push_back(3);
+
+    std::map<int, int> testMap;
+    testMap[7] = 2;
+    testMap[2] = -987;
+
+
+
     std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
     if (arg != 2)
