@@ -8,7 +8,11 @@
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureOnOpen": true,
     "files.associations": {
-        "dense": "cpp",
-        "eigenvalues": "cpp"
+      "dense": "cpp",
+      "eigenvalues": "cpp",
+      "set": "cpp",
+      "iterator": "cpp",
+      "map": "cpp",
+      "*.txx": "cpp"
     }
 }

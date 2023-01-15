@@ -266,7 +266,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 string(TOLOWER ${Project_NAME} User_Guide)
 include(InstallRequiredSystemLibraries)
 install(
-    TARGETS ${Project}
+    TARGETS ${Project} vtkExample RUNTIME_DEPENDENCIES
     )
 install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/api/html DESTINATION help/api)
 install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/usermanual/documentation/html DESTINATION help/manual)
