@@ -19,7 +19,7 @@ int main (int arg, char *argv[])
 {
     std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
-    VersionInfo versioning;
+    VersionInfo version;
 
 
     if (arg != 2)
@@ -33,10 +33,8 @@ int main (int arg, char *argv[])
 
     else
     {
-        versioning.getVersionInfo(argv[1]);
+        version.getVersionInfo(argv[1]);
     }
-
-
 
 
     int array[3] = {0, 1, 2};

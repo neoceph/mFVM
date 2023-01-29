@@ -7,6 +7,7 @@ string(REGEX REPLACE "vcpkg\n" "" VCPKG_PATH "${VCPKG_COMMAND_PATH}")
 set(VCPKG_TOOLCHAIN_PATH ${VCPKG_PATH}scripts/buildsystems/vcpkg.cmake)
 message("vcpkg path: "${VCPKG_TOOLCHAIN_PATH})
 set(CMAKE_TOOLCHAIN_FILE ${VCPKG_TOOLCHAIN_PATH} CACHE STRING "TEST") 
+# set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE) 
 
 # Read the JSON file. JSON file contains all information regarding project titles and named variables including developers.
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/CMakeSetup.json CMakeSetup_STRING)
@@ -47,7 +48,6 @@ find_package(VTK)
 
 # Appends the cmake/modules path to MAKE_MODULE_PATH variable.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
-# set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE) 
 
 # setting the directory of the source for doxygen documentation
 set(PROJECT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/src")
