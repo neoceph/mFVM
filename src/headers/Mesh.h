@@ -15,16 +15,20 @@
 #include <vtkXMLStructuredGridWriter.h>
 
 
-class ControlVolumeMesh: public vtkNew<vtkStructuredGrid>
-// class ControlVolumeMesh: public vtkStructuredGrid
+class ControlVolumeMesh
 {
     public:
-        // ControlVolumeMesh(void){}
-        ControlVolumeMesh(size_t nx, size_t ny, size_t nz);
+        ControlVolumeMesh(unsigned int dimension, std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
         ~ControlVolumeMesh();
         // double eastFaceArea = 1;
+
+        vtkNew<vtkStructuredGrid> controlVolumes;
+        vtkNew<vtkPoints> points;
+
         void testFunction();
         void meshGeneration();
+        void generatePoints(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
+        void writeData(char* fileName);
 };
 
 

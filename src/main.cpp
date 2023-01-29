@@ -17,9 +17,10 @@
 
 int main (int arg, char *argv[])
 {
-    std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
-
     VersionInfo version;
+    vtkNew<vtkXMLStructuredGridWriter> writer;
+
+    std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
 
     if (arg != 2)
@@ -59,7 +60,7 @@ int main (int arg, char *argv[])
     testMap[7] = 2;
     testMap[2] = -987;
 
-    vtkNew<vtkDoubleArray> scalarValue;
+    vtkNew<vtkDoubleArray> scalarValue, vectorValue, tensorValue, cellScalars, cellVectors, cellTensors;
 
     size_t nx = 2, ny = 3, nz = 2;
     auto dataSize = nx * ny * nz;
@@ -67,12 +68,43 @@ int main (int arg, char *argv[])
 
 
     scalarValue->SetName("Mass");
-  
     scalarValue->SetNumberOfComponents(1);
     scalarValue->SetNumberOfTuples(dataSize);
+
+    vectorValue->SetName("Velocity");
+    vectorValue->SetNumberOfComponents(3);
+    vectorValue->SetNumberOfTuples(dataSize);
+    
+    tensorValue->SetName("stress");
+    tensorValue->SetNumberOfComponents(9);
+    tensorValue->SetNumberOfTuples(dataSize);
+    
+    
     for (size_t i = 0; i < dataSize; ++i)
     {
         scalarValue->SetValue(i, i);
+        vectorValue->SetTuple3(i, i, 2*i, 3*i);
+        tensorValue->SetTuple9(i, i, 2*i, 3*i, i, 2*i, 3*i, i, 2*i, 3*i);
+    }
+
+    // Cell values
+    cellScalars->SetName("Density");
+    cellScalars->SetNumberOfTuples(numberOfCells);
+    
+    cellVectors->SetNumberOfComponents(3);
+    cellVectors->SetName("Acceleration");
+    cellVectors->SetNumberOfTuples(numberOfCells);
+
+    cellTensors->SetNumberOfComponents(9);
+    cellTensors->SetName("Stress");
+    cellTensors->SetNumberOfTuples(numberOfCells);
+
+
+    for (size_t i = 0; i < numberOfCells; ++i)
+    {
+        cellScalars->SetValue(i, i);
+        cellVectors->SetTuple3(i, i, 2*i, 3*i);
+        cellTensors->SetTuple9(i, i, 2*i, 3*i, i, 2*i, 3*i, i, 2*i, 3*i);
     }
 
 
@@ -81,6 +113,8 @@ int main (int arg, char *argv[])
     auto x = 0.0;
     auto y = 0.0;
     auto z = 0.0;
+    double coordinate[3];
+    int pointID=0;
     for (unsigned int k = 0; k < nz; k++)
     {
         y = 0.0;
@@ -90,35 +124,36 @@ int main (int arg, char *argv[])
             for (unsigned int i = 0; i < nx; i++)
             {
                 points->InsertNextPoint(x, y, z);
+                points->GetPoint(pointID, coordinate);
+                // cout<<coordinate<<endl;
                 x += 1.0;
+                pointID +=1;
             }
             y += 1.0;
         }
         z += 1.0;
     }
 
-    // vtkNew<ControlVolumeMesh> controlVolumes(size_t nx, size_t ny, size_t nz);
-    // vtkNew<ControlVolumeMesh> controlVolumes;
-    // vtkNew<vtkStructuredGrid> controlVolumes;
-    // ControlVolumeMesh controlVolumes;
 
     unsigned int dimension = 3;
-    std::vector<unsigned int> stepSizes;
-    ControlVolumeMesh controlVolumes(nx, ny, nz);
+    std::vector<unsigned int> stepNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
+    std::vector<double> domainSize{2.0, 3.0, 2.0};
 
-    controlVolumes->SetDimensions(static_cast<int>(nx), static_cast<int>(ny), static_cast<int>(nz));
 
-    controlVolumes->SetPoints(points);
-    controlVolumes->GetPointData()->AddArray(scalarValue);
+    ControlVolumeMesh mesh(dimension, stepNumbers, domainSize);
+
+    mesh.controlVolumes->GetPointData()->AddArray(scalarValue);
+    mesh.controlVolumes->GetPointData()->AddArray(vectorValue);
+    mesh.controlVolumes->GetPointData()->AddArray(tensorValue);
+    
+    mesh.controlVolumes->GetCellData()->AddArray(scalarValue);
+    mesh.controlVolumes->GetCellData()->AddArray(vectorValue);
+    mesh.controlVolumes->GetCellData()->AddArray(tensorValue);
 
     // cout << controlVolumes.eastFaceArea << endl;
 
+    char fileName[] = "output.vts";
 
-
-    // Write file
-    vtkNew<vtkXMLStructuredGridWriter> writer;
-    writer->SetFileName("output.vts");
-    writer->SetInputData(controlVolumes);
-    writer->Write();
+    mesh.writeData(fileName);
 
 }
