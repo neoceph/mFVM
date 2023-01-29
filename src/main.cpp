@@ -1,8 +1,9 @@
-#include<iostream>
-#include<map>
-#include<list>
-#include<vector>
-#include<string>
+#include <iostream>
+#include <map>
+#include <list>
+#include <vector>
+#include <string>
+#include <typeinfo>
 
 // external library headers
 #include <Eigen/Dense>
@@ -10,6 +11,7 @@
 #include <vtkNew.h>
 
 // self developed library headers
+// #include "version.h"
 #include "version.h"
 #include "Mesh.h"
 
@@ -17,24 +19,23 @@ int main (int arg, char *argv[])
 {
     std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
+    VersionInfo versioning;
+
+
     if (arg != 2)
     {
+        
         std::cout << "Missing parameter: input file name" << std::endl;
         std::cout << "Printing a test matrix" << std::endl;
         exit(1);
       return 0;
     }
 
-    if (strcmp(argv[1], "--version") == 0)
+    else
     {
-        std::cout << gGIT_VERSION << std::endl;
+        versioning.getVersionInfo(argv[1]);
     }
 
-    else if (strcmp(argv[1], "-v") == 0)
-    {
-        std::cout << gGIT_VERSION_SHORT << std::endl;
-    }    
-    // std::cout << gGIT_VERSION << std::endl << gGIT_VERSION_SHORT << std::endl;
 
 
 
@@ -102,6 +103,9 @@ int main (int arg, char *argv[])
     // vtkNew<ControlVolumeMesh> controlVolumes;
     // vtkNew<vtkStructuredGrid> controlVolumes;
     // ControlVolumeMesh controlVolumes;
+
+    unsigned int dimension = 3;
+    std::vector<unsigned int> stepSizes;
     ControlVolumeMesh controlVolumes(nx, ny, nz);
 
     controlVolumes->SetDimensions(static_cast<int>(nx), static_cast<int>(ny), static_cast<int>(nz));

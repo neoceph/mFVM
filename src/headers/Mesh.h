@@ -23,18 +23,9 @@ class ControlVolumeMesh: public vtkNew<vtkStructuredGrid>
         ControlVolumeMesh(size_t nx, size_t ny, size_t nz);
         ~ControlVolumeMesh();
         // double eastFaceArea = 1;
+        void testFunction();
+        void meshGeneration();
 };
 
-
-ControlVolumeMesh::ControlVolumeMesh(size_t nx, size_t ny, size_t nz)
-{
-    // constructor definition
-    // vtkStructuredGrid::SetDimensions(static_cast<int>(nx), static_cast<int>(ny), static_cast<int>(nz));
-}
-
-ControlVolumeMesh::~ControlVolumeMesh()
-{
-    // destructor definition
-}
 
 #endif /* MESH_H_ */

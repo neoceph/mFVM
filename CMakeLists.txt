@@ -47,7 +47,7 @@ find_package(VTK)
 
 # Appends the cmake/modules path to MAKE_MODULE_PATH variable.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
-set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE) 
+# set(CMAKE_TOOLCHAIN_FILE "/home/nirjhor/Software/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE) 
 
 # setting the directory of the source for doxygen documentation
 set(PROJECT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/src")

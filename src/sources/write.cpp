@@ -73,19 +73,19 @@ int main(int, char*[])
   structuredGrid->GetPointData()->SetScalars(pointValues);
 
   // The key is the cell Id and the value is a set of corresponding point Ids.
-  std::map<vtkIdType, std::set<vtkIdType>> cellPointIds;
-  vtkCellIterator* it = structuredGrid->NewCellIterator();
-  for (it->InitTraversal(); !it->IsDoneWithTraversal(); it->GoToNextCell())
+  std::map<vtkIdType, std::set<vtkIdType>> cellPointIds; // creating a set of cell point IDs.
+  vtkCellIterator* it = structuredGrid->NewCellIterator(); // creating an iterator to iterate through the list of cells.
+  for (it->InitTraversal(); !it->IsDoneWithTraversal(); it->GoToNextCell()) //loop for iterating through the cells.
   {
-    vtkIdList* pointIds = it->GetPointIds();
-    std::set<vtkIdType> ptIds;
-    for (vtkIdType* id = pointIds->begin(); id != pointIds->end(); ++id)
+    vtkIdList* pointIds = it->GetPointIds();  // getting the point id of all the cell associated vertices (8 in this case)
+    std::set<vtkIdType> ptIds;  // creating a set of vtkIdType with variable name ptIds
+    for (vtkIdType* id = pointIds->begin(); id != pointIds->end(); ++id)  //iterating through the pointIds list
     {
-      ptIds.insert(*id);
+      ptIds.insert(*id);  // inserting the ids of the points into the ptIds.
     }
-    cellPointIds[it->GetCellId()] = ptIds;
+    cellPointIds[it->GetCellId()] = ptIds; // storing all the point ids (ptIds) into the set for cell point IDs (created on line 76)
   }
-  it->Delete();
+  it->Delete(); // deleting iterators
 
   std::cout << "Cells and their points" << std::endl;
   for (auto const & cell : cellPointIds)
