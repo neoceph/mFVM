@@ -18,12 +18,14 @@
 class ControlVolumeMesh
 {
     public:
-        ControlVolumeMesh(unsigned int dimension, std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
+        ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
         ~ControlVolumeMesh();
         // double eastFaceArea = 1;
 
         vtkNew<vtkStructuredGrid> controlVolumes;
         vtkNew<vtkPoints> points;
+        vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
+        vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
 
         void testFunction();
         void meshGeneration();

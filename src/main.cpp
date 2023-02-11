@@ -135,20 +135,20 @@ int main (int arg, char *argv[])
     }
 
 
-    unsigned int dimension = 3;
+    // unsigned int dimension = 3;
     std::vector<unsigned int> stepNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
-    std::vector<double> domainSize{2.0, 3.0, 2.0};
+    std::vector<double> domainSize{2.0, 3.0, 2.0}; // defining the length of the entire domain
 
 
-    ControlVolumeMesh mesh(dimension, stepNumbers, domainSize);
+    ControlVolumeMesh mesh(stepNumbers, domainSize);
 
     mesh.controlVolumes->GetPointData()->AddArray(scalarValue);
     mesh.controlVolumes->GetPointData()->AddArray(vectorValue);
     mesh.controlVolumes->GetPointData()->AddArray(tensorValue);
     
-    mesh.controlVolumes->GetCellData()->AddArray(scalarValue);
-    mesh.controlVolumes->GetCellData()->AddArray(vectorValue);
-    mesh.controlVolumes->GetCellData()->AddArray(tensorValue);
+    mesh.controlVolumes->GetCellData()->AddArray(cellScalars);
+    mesh.controlVolumes->GetCellData()->AddArray(cellVectors);
+    mesh.controlVolumes->GetCellData()->AddArray(cellTensors);
 
     // cout << controlVolumes.eastFaceArea << endl;
 

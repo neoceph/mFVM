@@ -1,11 +1,40 @@
 #include <Mesh.h>
 #include <vtkXMLStructuredGridWriter.h>
 
-ControlVolumeMesh::ControlVolumeMesh(unsigned int dimension, std::vector<unsigned int> stepNumbers, std::vector<double> domainSize)
+ControlVolumeMesh::ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize)
 {
+    int totalNodes = stepNumbers[0] * stepNumbers[1] * stepNumbers[2];
+    int totalCells = (stepNumbers[0] - 1) * (stepNumbers[1] - 1) * (stepNumbers[2] - 1);
+    
     this->controlVolumes->SetDimensions(stepNumbers[0], stepNumbers[1], stepNumbers[2]);
     this->generatePoints(stepNumbers, domainSize);
     this->controlVolumes->SetPoints(this->points);
+
+    // initializing the scalars, vectors, and tensors
+
+    this->nodeScalars->SetName("Mass");
+    this->nodeScalars->SetNumberOfComponents(1);
+    this->nodeScalars->SetNumberOfTuples(totalNodes);
+
+    this->nodeVectors->SetName("Velocity");
+    this->nodeScalars->SetNumberOfComponents(3);
+    this->nodeScalars->SetNumberOfTuples(totalNodes);
+
+    this->nodeTensors->SetName("Stress");
+    this->nodeScalars->SetNumberOfComponents(9);
+    this->nodeScalars->SetNumberOfTuples(totalNodes);
+
+    this->cellScalars->SetName("Mass");
+    this->cellScalars->SetNumberOfComponents(1);
+    this->cellScalars->SetNumberOfTuples(totalCells);
+
+    this->cellVectors->SetName("Velocity");
+    this->cellScalars->SetNumberOfComponents(3);
+    this->cellScalars->SetNumberOfTuples(totalCells);
+
+    this->cellTensors->SetName("Stress");
+    this->cellScalars->SetNumberOfComponents(9);
+    this->cellScalars->SetNumberOfTuples(totalCells);
 }
 
 ControlVolumeMesh::~ControlVolumeMesh()
