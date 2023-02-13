@@ -1,13 +1,13 @@
 #include <Mesh.h>
 #include <vtkXMLStructuredGridWriter.h>
 
-ControlVolumeMesh::ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize)
+ControlVolumeMesh::ControlVolumeMesh(std::vector<unsigned int> nodeNumbers, std::vector<double> domainDimensions)
 {
-    int totalNodes = stepNumbers[0] * stepNumbers[1] * stepNumbers[2];
-    int totalCells = (stepNumbers[0] - 1) * (stepNumbers[1] - 1) * (stepNumbers[2] - 1);
+    totalNodes = nodeNumbers[0] * nodeNumbers[1] * nodeNumbers[2];
+    totalCells = (nodeNumbers[0] - 1) * (nodeNumbers[1] - 1) * (nodeNumbers[2] - 1);
     
-    this->controlVolumes->SetDimensions(stepNumbers[0], stepNumbers[1], stepNumbers[2]);
-    this->generatePoints(stepNumbers, domainSize);
+    this->controlVolumes->SetDimensions(nodeNumbers[0], nodeNumbers[1], nodeNumbers[2]);
+    this->generatePoints(nodeNumbers, domainDimensions);
     this->controlVolumes->SetPoints(this->points);
 
     // initializing the scalars, vectors, and tensors
@@ -17,24 +17,24 @@ ControlVolumeMesh::ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std:
     this->nodeScalars->SetNumberOfTuples(totalNodes);
 
     this->nodeVectors->SetName("Velocity");
-    this->nodeScalars->SetNumberOfComponents(3);
-    this->nodeScalars->SetNumberOfTuples(totalNodes);
+    this->nodeVectors->SetNumberOfComponents(3);
+    this->nodeVectors->SetNumberOfTuples(totalNodes);
 
     this->nodeTensors->SetName("Stress");
-    this->nodeScalars->SetNumberOfComponents(9);
-    this->nodeScalars->SetNumberOfTuples(totalNodes);
+    this->nodeTensors->SetNumberOfComponents(9);
+    this->nodeTensors->SetNumberOfTuples(totalNodes);
 
     this->cellScalars->SetName("Mass");
     this->cellScalars->SetNumberOfComponents(1);
     this->cellScalars->SetNumberOfTuples(totalCells);
 
     this->cellVectors->SetName("Velocity");
-    this->cellScalars->SetNumberOfComponents(3);
-    this->cellScalars->SetNumberOfTuples(totalCells);
+    this->cellVectors->SetNumberOfComponents(3);
+    this->cellVectors->SetNumberOfTuples(totalCells);
 
     this->cellTensors->SetName("Stress");
-    this->cellScalars->SetNumberOfComponents(9);
-    this->cellScalars->SetNumberOfTuples(totalCells);
+    this->cellTensors->SetNumberOfComponents(9);
+    this->cellTensors->SetNumberOfTuples(totalCells);
 }
 
 ControlVolumeMesh::~ControlVolumeMesh()
@@ -55,13 +55,13 @@ void ControlVolumeMesh::meshGeneration()
 
 }
 
-void ControlVolumeMesh::generatePoints(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize)
+void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, std::vector<double> domainDimensions)
 {
     double xStep, yStep, zStep;
 
-    xStep = domainSize[0] / stepNumbers[0];
-    yStep = domainSize[1] / stepNumbers[1];
-    zStep = domainSize[2] / stepNumbers[2];
+    xStep = domainDimensions[0] / nodeNumbers[0];
+    yStep = domainDimensions[1] / nodeNumbers[1];
+    zStep = domainDimensions[2] / nodeNumbers[2];
 
 
     auto x = 0.0;
@@ -69,13 +69,13 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> stepNumbers, st
     auto z = 0.0;
     double coordinate[3];
     int pointID=0;
-    for (unsigned int k = 0; k < stepNumbers[2]; k++)
+    for (unsigned int k = 0; k < nodeNumbers[2]; k++)
     {
         y = 0.0;
-        for (unsigned int j = 0; j < stepNumbers[1]; j++)
+        for (unsigned int j = 0; j < nodeNumbers[1]; j++)
         {
             x = 0.0;
-            for (unsigned int i = 0; i < stepNumbers[0]; i++)
+            for (unsigned int i = 0; i < nodeNumbers[0]; i++)
             {
                 points->InsertNextPoint(x, y, z);
                 points->GetPoint(pointID, coordinate);
@@ -94,7 +94,15 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> stepNumbers, st
 void ControlVolumeMesh::writeData(char* fileName)
 {
     vtkNew<vtkXMLStructuredGridWriter> writer;
+
+    this->controlVolumes->GetPointData()->AddArray(this->nodeScalars);
+    this->controlVolumes->GetPointData()->AddArray(this->nodeVectors);
+    this->controlVolumes->GetPointData()->AddArray(this->nodeTensors);
         
+    this->controlVolumes->GetCellData()->AddArray(this->cellScalars);
+    this->controlVolumes->GetCellData()->AddArray(this->cellVectors);
+    this->controlVolumes->GetCellData()->AddArray(this->cellTensors);
+
     writer->SetFileName(fileName);
     writer->SetInputData(controlVolumes);
     writer->Write();

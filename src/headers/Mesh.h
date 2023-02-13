@@ -7,6 +7,7 @@
 #include <set>
 
 // third party headers
+#include <vector>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkNew.h>
@@ -21,6 +22,10 @@ class ControlVolumeMesh
         ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
         ~ControlVolumeMesh();
         // double eastFaceArea = 1;
+
+        int totalNodes, totalCells;
+
+        std::vector<double> x_grid_;
 
         vtkNew<vtkStructuredGrid> controlVolumes;
         vtkNew<vtkPoints> points;
