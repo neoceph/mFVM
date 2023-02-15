@@ -1,52 +1,36 @@
-#include <Mesh.h>
+#include <iterator>
+#include <map>
+#include <set>
+
+// Third party headers
+#include <vtkCellIterator.h>
 #include <vtkXMLStructuredGridWriter.h>
 
-ControlVolumeMesh::ControlVolumeMesh(std::vector<unsigned int> nodeNumbers, std::vector<double> domainDimensions)
+// User defined headers
+#include "Mesh.h"
+
+
+ControlVolumeMesh::ControlVolumeMesh(
+    std::vector<unsigned int> nodeNumbers, 
+    std::vector<double> domainDimensions, 
+    std::set<std::pair<std::string, int>> stateVariables
+    )
 {
     totalNodes = nodeNumbers[0] * nodeNumbers[1] * nodeNumbers[2];
     totalCells = (nodeNumbers[0] - 1) * (nodeNumbers[1] - 1) * (nodeNumbers[2] - 1);
     
+    this->stateVariables = stateVariables;
+
     this->controlVolumes->SetDimensions(nodeNumbers[0], nodeNumbers[1], nodeNumbers[2]);
     this->generatePoints(nodeNumbers, domainDimensions);
     this->controlVolumes->SetPoints(this->points);
 
-    // initializing the scalars, vectors, and tensors
-
-    this->nodeScalars->SetName("Mass");
-    this->nodeScalars->SetNumberOfComponents(1);
-    this->nodeScalars->SetNumberOfTuples(totalNodes);
-
-    this->nodeVectors->SetName("Velocity");
-    this->nodeVectors->SetNumberOfComponents(3);
-    this->nodeVectors->SetNumberOfTuples(totalNodes);
-
-    this->nodeTensors->SetName("Stress");
-    this->nodeTensors->SetNumberOfComponents(9);
-    this->nodeTensors->SetNumberOfTuples(totalNodes);
-
-    this->cellScalars->SetName("Mass");
-    this->cellScalars->SetNumberOfComponents(1);
-    this->cellScalars->SetNumberOfTuples(totalCells);
-
-    this->cellVectors->SetName("Velocity");
-    this->cellVectors->SetNumberOfComponents(3);
-    this->cellVectors->SetNumberOfTuples(totalCells);
-
-    this->cellTensors->SetName("Stress");
-    this->cellTensors->SetNumberOfComponents(9);
-    this->cellTensors->SetNumberOfTuples(totalCells);
 }
 
 ControlVolumeMesh::~ControlVolumeMesh()
 {
     // destructor definition
 }
-
-void ControlVolumeMesh::testFunction()
-{
-    cout<<"Initializing Meshing..."<<endl;
-}
-
 
 void ControlVolumeMesh::meshGeneration()
 
@@ -90,20 +74,21 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
 }
 
 
-
-void ControlVolumeMesh::writeData(char* fileName)
+void ControlVolumeMesh::getCellPoints()
 {
-    vtkNew<vtkXMLStructuredGridWriter> writer;
-
-    this->controlVolumes->GetPointData()->AddArray(this->nodeScalars);
-    this->controlVolumes->GetPointData()->AddArray(this->nodeVectors);
-    this->controlVolumes->GetPointData()->AddArray(this->nodeTensors);
-        
-    this->controlVolumes->GetCellData()->AddArray(this->cellScalars);
-    this->controlVolumes->GetCellData()->AddArray(this->cellVectors);
-    this->controlVolumes->GetCellData()->AddArray(this->cellTensors);
-
-    writer->SetFileName(fileName);
-    writer->SetInputData(controlVolumes);
-    writer->Write();
+    std::map<vtkIdType, std::set<vtkIdType>> cellPointIds; // creating a set of cell point IDs.
+    vtkCellIterator* it = this->controlVolumes->NewCellIterator(); // creating an iterator to iterate through the list of cells.
+    std::set<vtkIdType> ptIds;  // creating a set of vtkIdType with variable name ptIds
+    
+    for (it->InitTraversal(); !it->IsDoneWithTraversal(); it->GoToNextCell()) //loop for iterating through the cells.
+    {
+        vtkIdList* pointIds = it->GetPointIds();  // getting the point id of all the cell associated vertices (8 in this case)
+        for (vtkIdType* id = pointIds->begin(); id != pointIds->end(); ++id)  //iterating through the pointIds list
+        {
+        ptIds.insert(*id);  // inserting the ids of the points into the ptIds.
+        }
+        cellPointIds[it->GetCellId()] = ptIds; // storing all the point ids (ptIds) into the set for cell point IDs (created on line 76)
+    }
+    it->Delete(); // deleting iterators
+  
 }

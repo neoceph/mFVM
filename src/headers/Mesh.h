@@ -19,11 +19,13 @@
 class ControlVolumeMesh
 {
     public:
-        ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
+        ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize, std::set<std::pair<std::string, int>> stateVariables);
         ~ControlVolumeMesh();
         // double eastFaceArea = 1;
 
         int totalNodes, totalCells;
+
+        std::set<std::pair<std::string, int>> stateVariables;
 
         std::vector<double> x_grid_;
 
@@ -32,10 +34,9 @@ class ControlVolumeMesh
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
 
-        void testFunction();
         void meshGeneration();
         void generatePoints(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
-        void writeData(char* fileName);
+        void getCellPoints();
 };
 
 
