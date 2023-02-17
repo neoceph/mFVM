@@ -10,10 +10,11 @@ Solver::Solver(ControlVolumeMesh *meshObject):mesh(meshObject)
 {
     // initializing the scalars, vectors, and tensors
     for (auto& stateVariable : mesh->stateVariables) {
-        // std::cout << stateVariable.first << " : " << stateVariable.second << std::endl;
 
             int numberOfTensorElements = pow(3, stateVariable.second);
-
+            
+            // initializing the nodal variables and cell variables by the name of the state variable, the number of components, and the number of tuples
+            
             this->nodalVariables[stateVariable.first]->SetName(stateVariable.first.c_str());
             this->nodalVariables[stateVariable.first]->SetNumberOfComponents(numberOfTensorElements);
             this->nodalVariables[stateVariable.first]->SetNumberOfTuples(mesh->totalNodes);  
@@ -23,31 +24,6 @@ Solver::Solver(ControlVolumeMesh *meshObject):mesh(meshObject)
             this->cellVariables[stateVariable.first]->SetNumberOfTuples(mesh->totalCells);  
     }
 
-
-
-    // this->nodeScalars->SetName("Temperature");
-    // this->nodeScalars->SetNumberOfComponents(1);
-    // this->nodeScalars->SetNumberOfTuples(mesh->totalNodes);
-
-    // this->nodeVectors->SetName("Velocity");
-    // this->nodeVectors->SetNumberOfComponents(3);
-    // this->nodeVectors->SetNumberOfTuples(mesh->totalNodes);
-
-    // this->nodeTensors->SetName("Stress");
-    // this->nodeTensors->SetNumberOfComponents(9);
-    // this->nodeTensors->SetNumberOfTuples(mesh->totalNodes);
-
-    // this->cellScalars->SetName("Temperature");
-    // this->cellScalars->SetNumberOfComponents(1);
-    // this->cellScalars->SetNumberOfTuples(mesh->totalCells);
-
-    // this->cellVectors->SetName("Velocity");
-    // this->cellVectors->SetNumberOfComponents(3);
-    // this->cellVectors->SetNumberOfTuples(mesh->totalCells);
-
-    // this->cellTensors->SetName("Stress");
-    // this->cellTensors->SetNumberOfComponents(9);
-    // this->cellTensors->SetNumberOfTuples(mesh->totalCells);
 }
 
 
@@ -58,9 +34,6 @@ void Solver::updateResults()
 
     for (size_t i = 0; i < mesh->totalNodes; ++i)
     {
-        // this->nodeScalars->SetValue(i, i);
-        // this->nodeVectors->SetTuple3(i, i, 2*i, 3*i);
-        // this->nodeTensors->SetTuple9(i, i, 2*i, 3*i, i, 2*i, 3*i, i, 2*i, 3*i);
 
         for (auto& stateVariable : mesh->stateVariables) 
         {
@@ -87,10 +60,6 @@ void Solver::updateResults()
 
     for (size_t i = 0; i < mesh->totalCells; ++i)
     {
-        // this->cellScalars->SetValue(i, i);
-        // this->cellVectors->SetTuple3(i, i, 2*i, 3*i);
-        // this->cellTensors->SetTuple9(i, i, 2*i, 3*i, i, 2*i, 3*i, i, 2*i, 3*i);
-
         for (auto& stateVariable : mesh->stateVariables) 
         {
             switch(stateVariable.second)
@@ -122,14 +91,6 @@ void Solver::writeData(char* fileName)
         mesh->controlVolumes->GetPointData()->AddArray(this->nodalVariables[stateVariable.first]);
         mesh->controlVolumes->GetCellData()->AddArray(this->cellVariables[stateVariable.first]);
     }
-
-    // mesh->controlVolumes->GetPointData()->AddArray(this->nodeScalars);
-    // mesh->controlVolumes->GetPointData()->AddArray(this->nodeVectors);
-    // mesh->controlVolumes->GetPointData()->AddArray(this->nodeTensors);
-        
-    // mesh->controlVolumes->GetCellData()->AddArray(this->cellScalars);
-    // mesh->controlVolumes->GetCellData()->AddArray(this->cellVectors);
-    // mesh->controlVolumes->GetCellData()->AddArray(this->cellTensors);
 
     writer->SetFileName(fileName);
     writer->SetInputData(mesh->controlVolumes);

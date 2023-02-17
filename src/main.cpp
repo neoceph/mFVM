@@ -19,6 +19,11 @@
 #include <Mesh.h>
 #include <Solver.h>
 
+struct KeyValuePair {
+    std::string key;
+    int value;
+};
+
 int main (int arg, char *argv[])
 {
 
@@ -26,35 +31,27 @@ int main (int arg, char *argv[])
 
     VersionInfo version;
     std::set<std::pair<std::string, int>> stateVariables;
-    // size_t nx = 2, ny = 4, nz = 4;
-    size_t nx = 450, ny = 250, nz = 200;
-    char fileName[] = "output.vts";
     
-    stateVariables.insert(std::make_pair("Temp", 0));
-    stateVariables.insert(std::make_pair("Vel", 1));
-    stateVariables.insert(std::make_pair("Str", 2));
-
-    // creating a list and set then assign the list to the set
-    std::list<std::string> stateVariablesList{"Temp", "Vel", "Str", "Temp"};
-    std::set<std::string> stateVariablesSet(stateVariablesList.begin(), stateVariablesList.end());
-
-    std::cout<<"The number of state variables is: "<<stateVariablesSet.size()<<std::endl;
-    for (const auto &stateVariable : stateVariablesSet)
-    {
-        std::cout<<stateVariable<<std::endl;
-    }
-    
-    std::cout<<"Printing a new Line"<<std::endl;
-    
-    for (const auto &stateVariable : stateVariablesList)
-    {
-        std::cout<<stateVariable<<std::endl;
-    }
-
     // unsigned int dimension = 3;
+    size_t nx = 2, ny = 4, nz = 4;
+    // size_t nx = 450, ny = 250, nz = 200;
+    
+    char fileName[] = "output.vts";
     std::vector<unsigned int> nodeNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
-    // std::vector<double> domainDimension{2.0, 3.0, 2.0}; // defining the length of the entire domain
     std::vector<double> domainDimension{4.5, 2.5, 2.0}; // defining the length of the entire domain
+    // defining the state variables and their tensor rank
+    std::list<KeyValuePair> myList = {
+        {"Temp", 0},
+        {"Vel", 1},
+        {"Stress", 2}
+    };
+
+    
+    // assigning the key value list pairs to the stateVariables set
+    for (auto it = myList.begin(); it != myList.end(); ++it)
+    {
+        stateVariables.insert(std::make_pair(it->key, it->value));
+    }
 
     std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
