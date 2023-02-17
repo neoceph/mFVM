@@ -1,3 +1,4 @@
+[![Documentation Status](https://readthedocs.org/projects/mfvm/badge/?version=latest)](https://mfvm.readthedocs.io/en/latest/?badge=latest)
 # multiphase FVM solver for laser powder bed Additive Manufacturing problems (C++) 
 BetaVersion
 Developed by Abdullah Al Amin. email: abdullah.amin@northwestern.edu 
