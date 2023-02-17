@@ -10,19 +10,21 @@
 #include "Mesh.h"
 
 
-ControlVolumeMesh::ControlVolumeMesh(
-    std::vector<unsigned int> nodeNumbers, 
-    std::vector<double> domainDimensions, 
-    std::set<std::pair<std::string, int>> stateVariables
-    )
+// ControlVolumeMesh::ControlVolumeMesh(
+//     std::vector<unsigned int> nodeNumbers, 
+//     std::vector<double> domainDimensions, 
+//     std::set<std::pair<std::string, int>> stateVariables
+//     )
+ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):inputs(inputProcessorObject)
 {
-    totalNodes = nodeNumbers[0] * nodeNumbers[1] * nodeNumbers[2];
-    totalCells = (nodeNumbers[0] - 1) * (nodeNumbers[1] - 1) * (nodeNumbers[2] - 1);
+    // nodeNumber = inputs->nodeNumbers;
+    totalNodes = inputs->nodeNumbers[0] * inputs->nodeNumbers[1] * inputs->nodeNumbers[2];
+    totalCells = (inputs->nodeNumbers[0] - 1) * (inputs->nodeNumbers[1] - 1) * (inputs->nodeNumbers[2] - 1);
     
-    this->stateVariables = stateVariables;
+    this->stateVariables = inputs->stateVariables;
 
-    this->controlVolumes->SetDimensions(nodeNumbers[0], nodeNumbers[1], nodeNumbers[2]);
-    this->generatePoints(nodeNumbers, domainDimensions);
+    this->controlVolumes->SetDimensions(inputs->nodeNumbers[0], inputs->nodeNumbers[1], inputs->nodeNumbers[2]);
+    this->generatePoints(inputs->nodeNumbers, inputs->domainDimensions);
     this->controlVolumes->SetPoints(this->points);
 
 }

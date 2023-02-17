@@ -15,12 +15,18 @@
 #include <vtkStructuredGrid.h>
 #include <vtkXMLStructuredGridWriter.h>
 
+// User defined headers
+#include <InputProcessor.h>
 
 class ControlVolumeMesh
 {
     public:
-        ControlVolumeMesh(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize, std::set<std::pair<std::string, int>> stateVariables);
+        ControlVolumeMesh(InputProcessor *inputProcessorObject);
         ~ControlVolumeMesh();
+
+        // Input
+        InputProcessor *inputs;
+        
         // double eastFaceArea = 1;
 
         int totalNodes, totalCells;

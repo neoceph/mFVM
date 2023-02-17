@@ -1,6 +1,10 @@
 // Standard headers
 #include <math.h>
+#include <string>
 
+// Third party headers
+
+// User defined headers
 #include <Mesh.h>
 #include <Solver.h>
 

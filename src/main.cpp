@@ -1,3 +1,4 @@
+// Standard headers
 #include <iostream>
 #include <map>
 #include <set>
@@ -7,22 +8,16 @@
 #include <typeinfo>
 #include <chrono>
 
-// external library headers
+// Third party headers
 #include <Eigen/Dense>
-#include <vtkXMLStructuredGridWriter.h>
-#include <vtkNew.h>
 #include <vtkDoubleArray.h>
+#include <vtkNew.h>
+#include <vtkXMLStructuredGridWriter.h>
 
-// self developed library headers
-// #include "version.h"
+// User defined headers
 #include <version.h>
 #include <Mesh.h>
 #include <Solver.h>
-
-struct KeyValuePair {
-    std::string key;
-    int value;
-};
 
 int main (int arg, char *argv[])
 {
@@ -31,28 +26,8 @@ int main (int arg, char *argv[])
 
     VersionInfo version;
     std::set<std::pair<std::string, int>> stateVariables;
-    
-    // unsigned int dimension = 3;
-    size_t nx = 2, ny = 4, nz = 4;
-    // size_t nx = 450, ny = 250, nz = 200;
-    
-    char fileName[] = "output.vts";
-    std::vector<unsigned int> nodeNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
-    std::vector<double> domainDimension{4.5, 2.5, 2.0}; // defining the length of the entire domain
-    // defining the state variables and their tensor rank
-    std::list<KeyValuePair> myList = {
-        {"Temp", 0},
-        {"Vel", 1},
-        {"Stress", 2}
-    };
 
     
-    // assigning the key value list pairs to the stateVariables set
-    for (auto it = myList.begin(); it != myList.end(); ++it)
-    {
-        stateVariables.insert(std::make_pair(it->key, it->value));
-    }
-
     std::cout << "Multiphase solver for Additive Manufacturing Problems!\n";
 
 
@@ -70,11 +45,16 @@ int main (int arg, char *argv[])
         version.getVersionInfo(argv[1]);
     }
 
-    ControlVolumeMesh mesh(nodeNumbers, domainDimension, stateVariables);
+    // beginning of the analysis
+
+    InputProcessor inputProcessor;
+    inputProcessor.printFileName();
+    ControlVolumeMesh mesh(&inputProcessor);
     Solver *amSolver = new Solver(&mesh);
 
     amSolver->updateResults();
-    amSolver->writeData(fileName);
+    amSolver->writeData(inputProcessor.fileName);
+
 
     auto end = std::chrono::high_resolution_clock::now();
 
