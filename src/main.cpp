@@ -31,6 +31,22 @@ int main (int arg, char *argv[])
     stateVariables.insert(std::make_pair("Vel", 1));
     stateVariables.insert(std::make_pair("Str", 2));
 
+    // creating a list and set then assign the list to the set
+    std::list<std::string> stateVariablesList{"Temp", "Vel", "Str", "Temp"};
+    std::set<std::string> stateVariablesSet(stateVariablesList.begin(), stateVariablesList.end());
+
+    std::cout<<"The number of state variables is: "<<stateVariablesSet.size()<<std::endl;
+    for (const auto &stateVariable : stateVariablesSet)
+    {
+        std::cout<<stateVariable<<std::endl;
+    }
+    
+    std::cout<<"Printing a new Line"<<std::endl;
+    
+    for (const auto &stateVariable : stateVariablesList)
+    {
+        std::cout<<stateVariable<<std::endl;
+    }
 
     // unsigned int dimension = 3;
     std::vector<unsigned int> nodeNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
