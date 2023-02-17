@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
+#include <chrono>
 
 // external library headers
 #include <Eigen/Dense>
@@ -21,10 +22,12 @@
 int main (int arg, char *argv[])
 {
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     VersionInfo version;
-    size_t nx = 2, ny = 4, nz = 4;
     std::set<std::pair<std::string, int>> stateVariables;
-    // size_t nx = 450, ny = 250, nz = 200;
+    // size_t nx = 2, ny = 4, nz = 4;
+    size_t nx = 450, ny = 250, nz = 200;
     char fileName[] = "output.vts";
     
     stateVariables.insert(std::make_pair("Temp", 0));
@@ -75,5 +78,10 @@ int main (int arg, char *argv[])
 
     amSolver->updateResults();
     amSolver->writeData(fileName);
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout<<"Time Elapsed: "<<elapsed.count()<<" seconds"<<std::endl;
 
 }
