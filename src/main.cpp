@@ -1,18 +1,19 @@
 // Standard headers
+#include <chrono>
 #include <iostream>
+#include <list>
 #include <map>
 #include <set>
-#include <list>
-#include <vector>
-#include <string>
 #include <typeinfo>
-#include <chrono>
+#include <string>
+#include <vector>
 
 // Third party headers
 #include <Eigen/Dense>
 #include <vtkDoubleArray.h>
 #include <vtkNew.h>
 #include <vtkXMLStructuredGridWriter.h>
+
 
 // User defined headers
 #include <version.h>
@@ -47,8 +48,8 @@ int main (int arg, char *argv[])
 
     // beginning of the analysis
 
+    // initializing the objects
     InputProcessor inputProcessor;
-    inputProcessor.printFileName();
     ControlVolumeMesh mesh(&inputProcessor);
     Solver *amSolver = new Solver(&mesh);
 

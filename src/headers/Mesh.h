@@ -40,9 +40,16 @@ class ControlVolumeMesh
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
 
+        std::set<vtkIdType> vertexIds;  // creating a set of vtkIdType with variable name ptIds
+        std::map<vtkIdType, std::set<vtkIdType>> cellVertexIds; // creating a set of cell vertex IDs and storing them by cell IDs.
+        std::map<vtkIdType, std::array<double, 3>> cellCenters; // creating a set of cell center and storing them by cell IDs.
+
+
         void meshGeneration();
         void generatePoints(std::vector<unsigned int> stepNumbers, std::vector<double> domainSize);
-        void getCellPoints();
+        void identifyCellVertex();
+        void generateCellCenters();
+        void generateFaceAreas();
 };
 
 

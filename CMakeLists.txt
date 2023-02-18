@@ -39,6 +39,7 @@ if (OPENMP_FOUND)
 endif()
 
 find_package(VTK)
+find_package(Armadillo CONFIG REQUIRED)
 
 
 
@@ -79,6 +80,7 @@ set(CMAKE_INSTALL_PREFIX "/${Project_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}.${V
 include_directories(
     ${ProjectLib} "${CMAKE_SOURCE_DIR}/src/headers"
     )
+include_directories(${ARMADILLO_INCLUDE_DIRS})
 
 
 
@@ -98,7 +100,12 @@ add_subdirectory(src)
 target_link_directories(vtkExample PUBLIC src/)
 
 target_link_libraries(vtkExample PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
-target_link_libraries(${Project} PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
+target_link_libraries(
+    ${Project} 
+    PUBLIC ${VTK_LIBRARIES} 
+    PUBLIC ${ProjectLib}
+    PUBLIC ${ARMADILLO_LIBRARIES}
+    )
 
  
 

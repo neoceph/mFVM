@@ -1,13 +1,16 @@
+// Standard headers
 #include <iterator>
 #include <map>
 #include <set>
 
 // Third party headers
+#include <armadillo>
 #include <vtkCellIterator.h>
+#include <vtkType.h>
 #include <vtkXMLStructuredGridWriter.h>
 
 // User defined headers
-#include "Mesh.h"
+#include <Mesh.h>
 
 
 // ControlVolumeMesh::ControlVolumeMesh(
@@ -26,6 +29,10 @@ ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):input
     this->controlVolumes->SetDimensions(inputs->nodeNumbers[0], inputs->nodeNumbers[1], inputs->nodeNumbers[2]);
     this->generatePoints(inputs->nodeNumbers, inputs->domainDimensions);
     this->controlVolumes->SetPoints(this->points);
+
+    this->identifyCellVertex();
+    this->generateCellCenters();
+    this->generateFaceAreas();
 
 }
 
@@ -64,7 +71,7 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
             for (unsigned int i = 0; i < nodeNumbers[0]; i++)
             {
                 points->InsertNextPoint(x, y, z);
-                points->GetPoint(pointID, coordinate);
+                // points->GetPoint(pointID, coordinate); // getting the coordinate of the point
                 x += xStep;
                 pointID +=1;
                 
@@ -76,21 +83,76 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
 }
 
 
-void ControlVolumeMesh::getCellPoints()
+void ControlVolumeMesh::identifyCellVertex()
 {
-    std::map<vtkIdType, std::set<vtkIdType>> cellPointIds; // creating a set of cell point IDs.
     vtkCellIterator* it = this->controlVolumes->NewCellIterator(); // creating an iterator to iterate through the list of cells.
-    std::set<vtkIdType> ptIds;  // creating a set of vtkIdType with variable name ptIds
     
     for (it->InitTraversal(); !it->IsDoneWithTraversal(); it->GoToNextCell()) //loop for iterating through the cells.
     {
+        vtkPoints* points = it->GetPoints(); // getting the points of the cell
+
         vtkIdList* pointIds = it->GetPointIds();  // getting the point id of all the cell associated vertices (8 in this case)
         for (vtkIdType* id = pointIds->begin(); id != pointIds->end(); ++id)  //iterating through the pointIds list
         {
-        ptIds.insert(*id);  // inserting the ids of the points into the ptIds.
+        vertexIds.insert(*id);  // inserting the ids of the points into the vertexIds set to be inserted into the cellVertexIds map
         }
-        cellPointIds[it->GetCellId()] = ptIds; // storing all the point ids (ptIds) into the set for cell point IDs (created on line 76)
+        cellVertexIds[it->GetCellId()] = vertexIds; // storing all the point ids (ptIds) into the set for cell point IDs (created on line 83)
+        vertexIds.clear(); // clearing the vertexIds set to be used for the next cell
+
     }
     it->Delete(); // deleting iterators
+
+    for (auto& vertex : vertexIds)
+    {
+        std::cout<<"Cell ID: "<<it->GetCellId()<<" Vertex ID: "<<vertex<<std::endl;
+    }
+    
   
+}
+
+void ControlVolumeMesh::generateCellCenters()
+{
+    for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
+    {
+        std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
+        for (auto& vertex : cell.second) // iterating through the cellVertexIds map
+        {
+            double point[3]; // creating a double array to store the coordinates of the point
+            this->controlVolumes->GetPoint(vertex, point); // getting the coordinates of the point
+            center[0] += point[0]; // adding the x coordinate of the point to the x coordinate of the center
+            center[1] += point[1]; // adding the y coordinate of the point to the y coordinate of the center
+            center[2] += point[2]; // adding the z coordinate of the point to the z coordinate of the center
+
+            // std::cout<<"Cell ID: "<<cell.first<<" Vertex ID: "<<vertex<<" Point: "<<point[0]<<" "<<point[1]<<" "<<point[2]<<std::endl;
+        }
+        center[0] /= cell.second.size(); // dividing the x coordinate of the center by the number of points in the cell
+        center[1] /= cell.second.size(); // dividing the y coordinate of the center by the number of points in the cell
+        center[2] /= cell.second.size(); // dividing the z coordinate of the center by the number of points in the cell
+        cellCenters[cell.first] = center; // storing the center of the cell in the cellCenters map
+
+    }
+
+    // for (auto it = cellCenters.begin(); it != cellCenters.end(); ++it) // iterating through the cellCenters map
+    // {
+    //     std::cout << "Cell ID: " << it->first << " Center: " << it->second[0] << " " << it->second[1] << " " << it->second[2] << std::endl;
+    // }
+}
+
+void ControlVolumeMesh::generateFaceAreas()
+{
+    // iterate through cells and generate face areas
+    for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
+    {
+        // std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
+        for (auto& vertex : cell.second) // iterating through the cellVertexIds map
+        {
+            double point[3]; // creating a double array to store the coordinates of the point
+            this->controlVolumes->GetPoint(vertex, point); // getting the coordinates of the point
+            // center[0] += point[0]; // adding the x coordinate of the point to the x coordinate of the center
+            // center[1] += point[1]; // adding the y coordinate of the point to the y coordinate of the center
+            // center[2] += point[2]; // adding the z coordinate of the point to the z coordinate of the center
+            std::cout << "Cell ID: " << cell.first << " Vertex ID: " << vertex << " Point: " << point[0] << " " << point[1] << " " << point[2] << std::endl;
+        }
+
+    }
 }
