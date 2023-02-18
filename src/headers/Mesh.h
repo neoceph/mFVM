@@ -19,6 +19,21 @@
 // User defined headers
 #include <InputProcessor.h>
 
+
+// Struct for face properties
+struct Face
+{
+    double area;
+    double coordinate[3];
+};
+
+// Struct for cell properties
+struct Cell
+{
+    std::map<std::string, Face> faces;
+};
+
+// Class for control volume mesh
 class ControlVolumeMesh
 {
     public:
@@ -27,13 +42,16 @@ class ControlVolumeMesh
 
         // Input
         InputProcessor *inputs;
+        Face face;
+        Cell cell;
         
+
         // double eastFaceArea = 1;
 
         int totalNodes, totalCells;
 
         std::set<std::pair<std::string, int>> stateVariables;
-
+        std::map<vtkIdType, Cell> cells;
         std::vector<double> x_grid_;
 
         vtkNew<vtkStructuredGrid> controlVolumes;
@@ -42,6 +60,8 @@ class ControlVolumeMesh
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
 
+        std::set<std::string, double> faceAreas;
+        std::set<vtkIdType, double> faceCenters;
         std::set<vtkIdType> vertexIds;  // creating a set of vtkIdType with variable name ptIds
         std::map<vtkIdType, std::set<vtkIdType>> cellVertexIds; // creating a set of cell vertex IDs and storing them by cell IDs.
         std::map<vtkIdType, std::array<double, 3>> cellCenters; // creating a set of cell center and storing them by cell IDs.
@@ -52,7 +72,8 @@ class ControlVolumeMesh
         void identifyCellVertex();
         void generateCellCenters();
         void generateFaceAreas();
-        std::map<vtkIdType, std::array<double, 3>> sortPoints(int axis, std::map<vtkIdType, std::array<double, 3>> pointsCoordinates);
+        arma::mat sortPoints(const arma::mat& points, int axis);
+        double calculate_quadrilateral_area(const arma::mat& points);
 };
 
 

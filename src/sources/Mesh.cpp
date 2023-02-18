@@ -20,7 +20,20 @@
 //     )
 ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):inputs(inputProcessorObject)
 {
+    
+    face.area = 1;
+    std::cout<<face.area<<std::endl;
     // nodeNumber = inputs->nodeNumbers;
+    cell.faces["east"].area = 1;
+    // cell.faces["east"].coordinate[0] = 1.0;
+    // cell.faces["east"].coordinate[1] = 2.0;
+    // cell.faces["east"].coordinate[2] = 2.0;
+    
+    cells[1] = cell;
+    std::cout<<cells[1].faces["east"].area<<std::endl;
+
+    std::cout<<cell.faces["east"].area<<std::endl;
+
     totalNodes = inputs->nodeNumbers[0] * inputs->nodeNumbers[1] * inputs->nodeNumbers[2];
     totalCells = (inputs->nodeNumbers[0] - 1) * (inputs->nodeNumbers[1] - 1) * (inputs->nodeNumbers[2] - 1);
     
@@ -72,7 +85,7 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
             {
                 points->InsertNextPoint(x, y, z);
                 points->GetPoint(pointID, coordinate); // getting the coordinate of the point
-                std::cout<<coordinate[0]<<" "<<coordinate[1]<<" "<<coordinate[2]<<std::endl;
+                // std::cout<<coordinate[0]<<" "<<coordinate[1]<<" "<<coordinate[2]<<std::endl;
                 x += xStep;
                 pointID +=1;
                 
@@ -113,10 +126,10 @@ void ControlVolumeMesh::identifyCellVertex()
 
 void ControlVolumeMesh::generateCellCenters()
 {
-    for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
+    for (auto& cellVertex : cellVertexIds) // iterating through the cellVertexIds map
     {
         std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
-        for (auto& vertex : cell.second) // iterating through the cellVertexIds map
+        for (auto& vertex : cellVertex.second) // iterating through the cellVertexIds map
         {
             double point[3]; // creating a double array to store the coordinates of the point
             this->controlVolumes->GetPoint(vertex, point); // getting the coordinates of the point
@@ -126,10 +139,12 @@ void ControlVolumeMesh::generateCellCenters()
 
             // std::cout<<"Cell ID: "<<cell.first<<" Vertex ID: "<<vertex<<" Point: "<<point[0]<<" "<<point[1]<<" "<<point[2]<<std::endl;
         }
-        center[0] /= cell.second.size(); // dividing the x coordinate of the center by the number of points in the cell
-        center[1] /= cell.second.size(); // dividing the y coordinate of the center by the number of points in the cell
-        center[2] /= cell.second.size(); // dividing the z coordinate of the center by the number of points in the cell
-        cellCenters[cell.first] = center; // storing the center of the cell in the cellCenters map
+        center[0] /= cellVertex.second.size(); // dividing the x coordinate of the center by the number of points in the cell
+        center[1] /= cellVertex.second.size(); // dividing the y coordinate of the center by the number of points in the cell
+        center[2] /= cellVertex.second.size(); // dividing the z coordinate of the center by the number of points in the cell
+        cellCenters[cellVertex.first] = center; // storing the center of the cell in the cellCenters map
+
+        // cellSet[0] = cellVertex.first;
 
     }
 
@@ -142,22 +157,85 @@ void ControlVolumeMesh::generateCellCenters()
 void ControlVolumeMesh::generateFaceAreas()
 {
     // clearing the pointsForSorting vector
-    pointsForSorting.clear();
+        
     // iterate through cells and generate face areas
     for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
     {
+        
+        // Collecting the points of the cell for face area and face center calculation
+        pointsForSorting.clear();
         // std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
         for (auto& vertex : cell.second) // iterating through the cellVertexIds map
         {
             double pointCoordinate[3]; // creating a double array to store the coordinates of the point
             this->controlVolumes->GetPoint(vertex, pointCoordinate); // getting the coordinates of the point
+            arma::vec vec(pointCoordinate, 3);
+            pointsForSorting.push_back(vec);
             std::cout << "Cell ID: " << cell.first << " Vertex ID: " << vertex << " Point: " << pointCoordinate[0] << " " << pointCoordinate[1] << " " << pointCoordinate[2] << std::endl;
 
         }
+        
+        // transferring the pointsForSorting vector to an arma::mat object
+        arma::mat sortedPoints(pointsForSorting.size(), 3);
+        for (std::size_t i=0; i<pointsForSorting.size(); ++i)
+        {
+            sortedPoints.row(i) = pointsForSorting[i].t();
+        }
+
+        // // printing the sortedPoints before and after sorting
+        // arma::cout << "Points Before Sorting:" << arma::endl;
+        // arma::cout << sortedPoints << arma::endl;
+
+        arma::cout << "Points After Sorting:" << arma::endl;
+        sortedPoints = sortPoints(sortedPoints, 2);
+        arma::cout << sortedPoints << arma::endl;
+
+        arma::mat firstFour = sortedPoints.rows(0, 3);
+        arma::mat lastFour = sortedPoints.rows(4, 7);
+        
+        // calculating the area of the faces
+        arma::cout << "First four points: "<< std::endl << firstFour << std::endl;
+        arma::cout << "Last four points: "<< std::endl << lastFour << std::endl;
+        // calculating the area of the faces
+
+
+        arma::cout << "Area of the bottom face: " << calculate_quadrilateral_area(firstFour) << std::endl;
+        arma::cout << "Area of the top face: " << calculate_quadrilateral_area(lastFour) << std::endl;
+
     }   
 }
 
-std::map<vtkIdType, std::array<double, 3>> ControlVolumeMesh::sortPoints(int axis, std::map<vtkIdType, std::array<double, 3>> pointsCoordinates)
+/**
+ * Sorts an `arma::mat` object by a specified axis.
+ * 
+ * @param points The input `arma::mat` object to be sorted.
+ * @param axis The axis to sort the points by (0 for x-axis, 1 for y-axis, 2 for z-axis).
+ * 
+ * @return The sorted `arma::mat` object.
+ */
+arma::mat ControlVolumeMesh::sortPoints(const arma::mat& points, int axis)
 {
-    return pointsCoordinates;
+    
+    arma::mat sorted_points = points;
+    sorted_points = sorted_points.rows(arma::sort_index(sorted_points.col(axis)));
+    return sorted_points;
 }
+
+/**
+ * @brief Calculates the area of a quadrilateral.
+ * 
+ * @param points in the form of an `arma::mat` object. 
+ * @return double 
+ */
+double ControlVolumeMesh::calculate_quadrilateral_area(const arma::mat& points) 
+{
+       
+    arma::mat l1 = points.rows(1, 1) - points.rows(0, 0);
+    arma::mat l2 = points.rows(2, 2) - points.rows(0, 0);
+    arma::mat crossProduct = arma::cross(l1, l2);
+
+    double area = arma::norm(crossProduct);
+    
+    return std::abs(area);
+}
+

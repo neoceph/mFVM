@@ -56,7 +56,6 @@ int main (int arg, char *argv[])
     amSolver->updateResults();
     amSolver->writeData(inputProcessor.fileName);
 
-
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> elapsed = end - start;
