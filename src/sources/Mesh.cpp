@@ -52,9 +52,9 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
 {
     double xStep, yStep, zStep;
 
-    xStep = domainDimensions[0] / nodeNumbers[0];
-    yStep = domainDimensions[1] / nodeNumbers[1];
-    zStep = domainDimensions[2] / nodeNumbers[2];
+    xStep = domainDimensions[0] / (nodeNumbers[0]-1);
+    yStep = domainDimensions[1] / (nodeNumbers[1]-1);
+    zStep = domainDimensions[2] / (nodeNumbers[2]-1);
 
 
     auto x = 0.0;
@@ -71,7 +71,8 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
             for (unsigned int i = 0; i < nodeNumbers[0]; i++)
             {
                 points->InsertNextPoint(x, y, z);
-                // points->GetPoint(pointID, coordinate); // getting the coordinate of the point
+                points->GetPoint(pointID, coordinate); // getting the coordinate of the point
+                std::cout<<coordinate[0]<<" "<<coordinate[1]<<" "<<coordinate[2]<<std::endl;
                 x += xStep;
                 pointID +=1;
                 
@@ -140,19 +141,23 @@ void ControlVolumeMesh::generateCellCenters()
 
 void ControlVolumeMesh::generateFaceAreas()
 {
+    // clearing the pointsForSorting vector
+    pointsForSorting.clear();
     // iterate through cells and generate face areas
     for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
     {
         // std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
         for (auto& vertex : cell.second) // iterating through the cellVertexIds map
         {
-            double point[3]; // creating a double array to store the coordinates of the point
-            this->controlVolumes->GetPoint(vertex, point); // getting the coordinates of the point
-            // center[0] += point[0]; // adding the x coordinate of the point to the x coordinate of the center
-            // center[1] += point[1]; // adding the y coordinate of the point to the y coordinate of the center
-            // center[2] += point[2]; // adding the z coordinate of the point to the z coordinate of the center
-            std::cout << "Cell ID: " << cell.first << " Vertex ID: " << vertex << " Point: " << point[0] << " " << point[1] << " " << point[2] << std::endl;
-        }
+            double pointCoordinate[3]; // creating a double array to store the coordinates of the point
+            this->controlVolumes->GetPoint(vertex, pointCoordinate); // getting the coordinates of the point
+            std::cout << "Cell ID: " << cell.first << " Vertex ID: " << vertex << " Point: " << pointCoordinate[0] << " " << pointCoordinate[1] << " " << pointCoordinate[2] << std::endl;
 
-    }
+        }
+    }   
+}
+
+std::map<vtkIdType, std::array<double, 3>> ControlVolumeMesh::sortPoints(int axis, std::map<vtkIdType, std::array<double, 3>> pointsCoordinates)
+{
+    return pointsCoordinates;
 }

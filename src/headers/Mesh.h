@@ -7,6 +7,7 @@
 #include <set>
 
 // third party headers
+#include <armadillo>
 #include <vector>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
@@ -37,6 +38,7 @@ class ControlVolumeMesh
 
         vtkNew<vtkStructuredGrid> controlVolumes;
         vtkNew<vtkPoints> points;
+        std::vector<arma::vec> pointsForSorting;
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
 
@@ -50,6 +52,7 @@ class ControlVolumeMesh
         void identifyCellVertex();
         void generateCellCenters();
         void generateFaceAreas();
+        std::map<vtkIdType, std::array<double, 3>> sortPoints(int axis, std::map<vtkIdType, std::array<double, 3>> pointsCoordinates);
 };
 
 

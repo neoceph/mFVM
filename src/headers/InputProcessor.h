@@ -44,7 +44,7 @@ class InputProcessor
 
             char fileName[fileNameLength] = "output.vts";
             std::vector<unsigned int> nodeNumbers{static_cast<uint>(nx), static_cast<uint>(ny), static_cast<uint>(nz)};
-            std::vector<double> domainDimensions{4.5, 2.5, 2.0}; // defining the length of the entire domain
+            std::vector<double> domainDimensions{2.0, 2.0, 2.0}; // defining the length of the entire domain
             std::list<KeyValuePair> myList = {
                 {"Temp", 0},
                 {"Vel", 1},
