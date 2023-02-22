@@ -59,6 +59,7 @@ class ControlVolumeMesh
         std::vector<arma::vec> pointsForSorting;
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
+        std::vector<std::pair<std::string, std::string>> faceNames = {{"West", "East"}, {"South", "North"}, {"Bottom", "Top"}};
 
         std::set<std::string, double> faceAreas;
         std::set<vtkIdType, double> faceCenters;

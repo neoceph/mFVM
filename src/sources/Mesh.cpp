@@ -21,19 +21,6 @@
 ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):inputs(inputProcessorObject)
 {
     
-    face.area = 1;
-    std::cout<<face.area<<std::endl;
-    // nodeNumber = inputs->nodeNumbers;
-    cell.faces["east"].area = 1;
-    // cell.faces["east"].coordinate[0] = 1.0;
-    // cell.faces["east"].coordinate[1] = 2.0;
-    // cell.faces["east"].coordinate[2] = 2.0;
-    
-    cells[1] = cell;
-    std::cout<<cells[1].faces["east"].area<<std::endl;
-
-    std::cout<<cell.faces["east"].area<<std::endl;
-
     totalNodes = inputs->nodeNumbers[0] * inputs->nodeNumbers[1] * inputs->nodeNumbers[2];
     totalCells = (inputs->nodeNumbers[0] - 1) * (inputs->nodeNumbers[1] - 1) * (inputs->nodeNumbers[2] - 1);
     
@@ -116,10 +103,10 @@ void ControlVolumeMesh::identifyCellVertex()
     }
     it->Delete(); // deleting iterators
 
-    for (auto& vertex : vertexIds)
-    {
-        std::cout<<"Cell ID: "<<it->GetCellId()<<" Vertex ID: "<<vertex<<std::endl;
-    }
+    // for (auto& vertex : vertexIds)
+    // {
+    //     std::cout<<"Cell ID: "<<it->GetCellId()<<" Vertex ID: "<<vertex<<std::endl;
+    // }
     
   
 }
@@ -159,19 +146,19 @@ void ControlVolumeMesh::generateFaceAreas()
     // clearing the pointsForSorting vector
         
     // iterate through cells and generate face areas
-    for (auto& cell : cellVertexIds) // iterating through the cellVertexIds map
+    for (auto& cellID : cellVertexIds) // iterating through the cellVertexIds map
     {
         
         // Collecting the points of the cell for face area and face center calculation
         pointsForSorting.clear();
         // std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
-        for (auto& vertex : cell.second) // iterating through the cellVertexIds map
+        for (auto& vertex : cellID.second) // iterating through the cellVertexIds map
         {
             double pointCoordinate[3]; // creating a double array to store the coordinates of the point
             this->controlVolumes->GetPoint(vertex, pointCoordinate); // getting the coordinates of the point
             arma::vec vec(pointCoordinate, 3);
             pointsForSorting.push_back(vec);
-            std::cout << "Cell ID: " << cell.first << " Vertex ID: " << vertex << " Point: " << pointCoordinate[0] << " " << pointCoordinate[1] << " " << pointCoordinate[2] << std::endl;
+            // std::cout << "Cell ID: " << cellID.first << " Vertex ID: " << vertex << " Point: " << pointCoordinate[0] << " " << pointCoordinate[1] << " " << pointCoordinate[2] << std::endl;
 
         }
         
@@ -186,22 +173,70 @@ void ControlVolumeMesh::generateFaceAreas()
         // arma::cout << "Points Before Sorting:" << arma::endl;
         // arma::cout << sortedPoints << arma::endl;
 
-        arma::cout << "Points After Sorting:" << arma::endl;
-        sortedPoints = sortPoints(sortedPoints, 2);
-        arma::cout << sortedPoints << arma::endl;
-
-        arma::mat firstFour = sortedPoints.rows(0, 3);
-        arma::mat lastFour = sortedPoints.rows(4, 7);
         
-        // calculating the area of the faces
-        arma::cout << "First four points: "<< std::endl << firstFour << std::endl;
-        arma::cout << "Last four points: "<< std::endl << lastFour << std::endl;
-        // calculating the area of the faces
+        for (int i = 0; i < faceNames.size(); i++)
+        {
+            // estimating first face area
+            sortedPoints = sortPoints(sortedPoints, i);
+            this->cell.faces[faceNames[i].first].area = calculate_quadrilateral_area(sortedPoints.rows(0, 3));
 
+            arma::mat initialCoordinate = sortedPoints.rows(0, 3);
+            arma:: mat meanCoordinate = mean(initialCoordinate, 0);
 
-        arma::cout << "Area of the bottom face: " << calculate_quadrilateral_area(firstFour) << std::endl;
-        arma::cout << "Area of the top face: " << calculate_quadrilateral_area(lastFour) << std::endl;
+            this->cell.faces[faceNames[i].first].coordinate[0] = meanCoordinate(0);
+            this->cell.faces[faceNames[i].first].coordinate[1] = meanCoordinate(1);
+            this->cell.faces[faceNames[i].first].coordinate[2] = meanCoordinate(2);
 
+            // std::cout<< faceNames[i].first <<" face area: "<<this->cell.faces[faceNames[i].first].area<<std::endl;
+            // std::cout<< faceNames[i].first <<" face center x: "<<this->cell.faces[faceNames[i].first].coordinate[0]<<std::endl;
+            // std::cout<< faceNames[i].first <<" face center y: "<<this->cell.faces[faceNames[i].first].coordinate[1]<<std::endl;
+            // std::cout<< faceNames[i].first <<" face center z: "<<this->cell.faces[faceNames[i].first].coordinate[2]<<std::endl;
+
+            // estimating second face area
+            this->cell.faces[faceNames[i].second].area = calculate_quadrilateral_area(sortedPoints.rows(4, 7));
+
+            initialCoordinate = sortedPoints.rows(4, 7);
+            meanCoordinate = mean(initialCoordinate, 0);
+
+            this->cell.faces[faceNames[i].second].coordinate[0] = meanCoordinate(0);
+            this->cell.faces[faceNames[i].second].coordinate[1] = meanCoordinate(1);
+            this->cell.faces[faceNames[i].second].coordinate[2] = meanCoordinate(2);
+
+            // std::cout<< faceNames[i].second <<" face area: "<<this->cell.faces[faceNames[i].second].area<<std::endl;
+            // std::cout<< faceNames[i].second <<" face center x: "<<this->cell.faces[faceNames[i].second].coordinate[0]<<std::endl;
+            // std::cout<< faceNames[i].second <<" face center y: "<<this->cell.faces[faceNames[i].second].coordinate[1]<<std::endl;
+            // std::cout<< faceNames[i].second <<" face center z: "<<this->cell.faces[faceNames[i].second].coordinate[2]<<std::endl;
+
+        }
+
+        this->cells[cellID.first] = this->cell;
+
+        // std::cout<<"Cell ID: "<<cellID.first<<std::endl;
+        // std::cout<<"+++++++++++++++++++++++++++++++++++"<<std::endl;
+        // std::cout<<"East X: " <<this->cells[cellID.first].faces["East"].coordinate[0];
+        // std::cout<<", East Y: " <<this->cells[cellID.first].faces["East"].coordinate[1];
+        // std::cout<<", East z: " <<this->cells[cellID.first].faces["East"].coordinate[2]<<std::endl;
+
+        // std::cout<<"West X: " <<this->cells[cellID.first].faces["West"].coordinate[0];
+        // std::cout<<", West Y: " <<this->cells[cellID.first].faces["West"].coordinate[1];
+        // std::cout<<", West z: " <<this->cells[cellID.first].faces["West"].coordinate[2]<<std::endl;
+
+        // std::cout<<"South X: " <<this->cells[cellID.first].faces["South"].coordinate[0];
+        // std::cout<<", South Y: " <<this->cells[cellID.first].faces["South"].coordinate[1];
+        // std::cout<<", South z: " <<this->cells[cellID.first].faces["South"].coordinate[2]<<std::endl;
+
+        // std::cout<<"North X: " <<this->cells[cellID.first].faces["North"].coordinate[0];
+        // std::cout<<", North Y: " <<this->cells[cellID.first].faces["North"].coordinate[1];
+        // std::cout<<", North z: " <<this->cells[cellID.first].faces["North"].coordinate[2]<<std::endl;
+
+        // std::cout<<"Bottom X: "<<this->cells[cellID.first].faces["Bottom"].coordinate[0];
+        // std::cout<<", Bottom Y: "<<this->cells[cellID.first].faces["Bottom"].coordinate[1];
+        // std::cout<<", Bottom z: "<<this->cells[cellID.first].faces["Bottom"].coordinate[2]<<std::endl;
+        
+        // std::cout<<"Top X: "<<this->cells[cellID.first].faces["Top"].coordinate[0];
+        // std::cout<<", Top Y: "<<this->cells[cellID.first].faces["Top"].coordinate[1];
+        // std::cout<<", Top z: "<<this->cells[cellID.first].faces["Top"].coordinate[2]<<std::endl;
+        
     }   
 }
 

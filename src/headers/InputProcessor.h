@@ -39,7 +39,8 @@ class InputProcessor
             std::set<std::pair<std::string, int>> stateVariables;
     
             // unsigned int dimension = 3;
-            size_t nx = 2, ny = 4, nz = 4;
+            // size_t nx = 2, ny = 4, nz = 4;
+            size_t nx = 500, ny = 500, nz = 40;
             // size_t nx = 450, ny = 250, nz = 200;
 
             char fileName[fileNameLength] = "output.vts";
