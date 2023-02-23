@@ -19,6 +19,7 @@
 #include <version.h>
 #include <Mesh.h>
 #include <Solver.h>
+#include <Discretization.h>
 
 int main (int arg, char *argv[])
 {
@@ -51,7 +52,8 @@ int main (int arg, char *argv[])
     // initializing the objects
     InputProcessor inputProcessor;
     ControlVolumeMesh mesh(&inputProcessor);
-    Solver *amSolver = new Solver(&mesh);
+    FiniteVolumeMethod *FVM = new FiniteVolumeMethod();
+    Solver *amSolver = new Solver(&mesh, FVM);
 
     amSolver->updateResults();
     amSolver->writeData(inputProcessor.fileName);

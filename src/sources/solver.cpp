@@ -7,9 +7,14 @@
 // User defined headers
 #include <Mesh.h>
 #include <Solver.h>
+#include <Discretization.h>
 
-
-Solver::Solver(ControlVolumeMesh *meshObject):mesh(meshObject)
+Solver::Solver
+    (
+        ControlVolumeMesh *meshObject,
+        FiniteVolumeMethod *FVMObject
+    )
+    : mesh(meshObject), FVM(FVMObject)
                                
 {
     // initializing the scalars, vectors, and tensors

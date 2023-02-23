@@ -7,3 +7,8 @@
 #include <Discretization.h>
 
 
+FiniteVolumeMethod::FiniteVolumeMethod()
+{
+    // TODO Auto-generated constructor stub
+
+}

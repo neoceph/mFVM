@@ -10,6 +10,7 @@
 
 // User defined headers
 #include <Mesh.h>
+#include <Discretization.h>
 
 class ControlVolumeMesh;
 
@@ -17,12 +18,13 @@ class Solver
 {
     public:
         // Constructor
-        Solver(ControlVolumeMesh *meshObject);
+        Solver(ControlVolumeMesh *meshObject, FiniteVolumeMethod *FVMObject);
         // Destructor
         ~Solver();
 
         //Input
         ControlVolumeMesh *mesh;
+        FiniteVolumeMethod *FVM;
 
         //variables
         std::map<std::string, vtkNew<vtkDoubleArray>> nodeScalarTest, nodalVariables, cellVariables;
