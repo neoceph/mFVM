@@ -113,10 +113,10 @@ void ControlVolumeMesh::identifyCellVertex()
 
 void ControlVolumeMesh::generateCellCenters()
 {
-    for (auto& cellVertex : cellVertexIds) // iterating through the cellVertexIds map
+    for (auto& cells : cellVertexIds) // iterating through the cellVertexIds map
     {
         std::array<double, 3> center = {0.0, 0.0, 0.0}; // initializing the center of the cell to be zero
-        for (auto& vertex : cellVertex.second) // iterating through the cellVertexIds map
+        for (auto& vertex : cells.second) // iterating through the cellVertexIds map
         {
             double point[3]; // creating a double array to store the coordinates of the point
             this->controlVolumes->GetPoint(vertex, point); // getting the coordinates of the point
@@ -126,18 +126,21 @@ void ControlVolumeMesh::generateCellCenters()
 
             // std::cout<<"Cell ID: "<<cell.first<<" Vertex ID: "<<vertex<<" Point: "<<point[0]<<" "<<point[1]<<" "<<point[2]<<std::endl;
         }
-        center[0] /= cellVertex.second.size(); // dividing the x coordinate of the center by the number of points in the cell
-        center[1] /= cellVertex.second.size(); // dividing the y coordinate of the center by the number of points in the cell
-        center[2] /= cellVertex.second.size(); // dividing the z coordinate of the center by the number of points in the cell
-        cellCenters[cellVertex.first] = center; // storing the center of the cell in the cellCenters map
+        center[0] /= cells.second.size(); // dividing the x coordinate of the center by the number of points in the cell
+        center[1] /= cells.second.size(); // dividing the y coordinate of the center by the number of points in the cell
+        center[2] /= cells.second.size(); // dividing the z coordinate of the center by the number of points in the cell
+        // cellCenters[cells.first] = center; // storing the center of the cell in the cellCenters map
 
-        // cellSet[0] = cellVertex.first;
+        this->cells[cells.first].coordinate[0] = center[0];
+        this->cells[cells.first].coordinate[1] = center[1];
+        this->cells[cells.first].coordinate[2] = center[2];
+
 
     }
 
-    // for (auto it = cellCenters.begin(); it != cellCenters.end(); ++it) // iterating through the cellCenters map
+    // for (auto cell = cells.begin(); cell != cells.end(); ++cell) // iterating through the cells map
     // {
-    //     std::cout << "Cell ID: " << it->first << " Center: " << it->second[0] << " " << it->second[1] << " " << it->second[2] << std::endl;
+    //     std::cout << "Cell ID: " << cell->first << " Center: " << cells[cell->first].coordinate[0] << " " << cells[cell->first].coordinate[1] << " " << cells[cell->first].coordinate[2] << std::endl;
     // }
 }
 

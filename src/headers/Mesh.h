@@ -31,6 +31,7 @@ struct Face
 struct Cell
 {
     std::map<std::string, Face> faces;
+    double coordinate[3];
 };
 
 // Class for control volume mesh
@@ -65,7 +66,7 @@ class ControlVolumeMesh
         std::set<vtkIdType, double> faceCenters;
         std::set<vtkIdType> vertexIds;  // creating a set of vtkIdType with variable name ptIds
         std::map<vtkIdType, std::set<vtkIdType>> cellVertexIds; // creating a set of cell vertex IDs and storing them by cell IDs.
-        std::map<vtkIdType, std::array<double, 3>> cellCenters; // creating a set of cell center and storing them by cell IDs.
+        // std::map<vtkIdType, std::array<double, 3>> cellCenters; // creating a set of cell center and storing them by cell IDs.
 
 
         void meshGeneration();
