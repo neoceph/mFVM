@@ -24,10 +24,14 @@ class FiniteVolumeMethod
         Properties *properties;
 
         // Variables
-        typedef Eigen::SparseMatrix<double> SpMat; // declares a column-major sparse matrix type of double
-        std::vector<Eigen::Triplet<double>> triplets;
-        typedef Eigen::Triplet<double> T;
-        SpMat A;
+        // typedef Eigen::SparseMatrix<double> SparseMat; // declares a column-major sparse matrix type of double
+        // std::vector<Eigen::Triplet<double>> triplets;
+        // typedef Eigen::Triplet<double> T;
+        // SparseMat A;
+        // const Eigen::VectorXd b;
+
+        Eigen::SparseMatrix<double> A;
+        Eigen::VectorXd b;
 
         // Methods
         void assembleMatrix();

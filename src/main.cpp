@@ -59,6 +59,7 @@ int main (int arg, char *argv[])
     
     Solver amSolver(&mesh, &FVM);
 
+    amSolver.solve();
     amSolver.updateResults();
     amSolver.writeData(inputProcessor.fileName);
 

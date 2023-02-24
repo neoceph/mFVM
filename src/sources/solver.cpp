@@ -3,6 +3,7 @@
 #include <string>
 
 // Third party headers
+#include <Eigen/Sparse>
 
 // User defined headers
 #include <Mesh.h>
@@ -108,4 +109,26 @@ void Solver::writeData(char* fileName)
     writer->SetFileName(fileName);
     writer->SetInputData(mesh->controlVolumes);
     writer->Write();
+}
+
+void Solver::solve()
+{
+    // TODO Auto-generated method stub
+    Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+    solver.analyzePattern(FVM->A);
+    solver.factorize(FVM->A);
+
+    if (solver.info() != Eigen::Success) 
+    {
+        std::cout << "Factorization failed" << std::endl;
+        return;
+    }
+    Eigen::VectorXd x = solver.solve(FVM->b);
+    if (solver.info() != Eigen::Success) 
+    {
+        std::cout << "Solving failed" << std::endl;
+        return;
+    }
+    std::cout << "Solution: " << x.transpose() << std::endl;
+
 }

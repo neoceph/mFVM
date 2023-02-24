@@ -34,6 +34,7 @@ class Solver
         // methods
         void updateResults();
         void writeData(char* fileName);
+        void solve();
 };
 
 
