@@ -20,7 +20,7 @@
 #include <Mesh.h>
 #include <Solver.h>
 #include <Discretization.h>
-#include <TestProperties.h>
+#include <Properties.h>
 
 int main (int arg, char *argv[])
 {
@@ -53,7 +53,7 @@ int main (int arg, char *argv[])
     // initializing the objects
     InputProcessor inputProcessor;
     
-    TestProperties testProperties(&inputProcessor);
+    Properties Properties(&inputProcessor);
     ControlVolumeMesh mesh(&inputProcessor);
     FiniteVolumeMethod FVM(&inputProcessor);
     

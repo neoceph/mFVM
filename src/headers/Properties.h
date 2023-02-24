@@ -1,25 +1,33 @@
-#ifndef PROPERTIES_H_
-#define PROPERTIES_H_
+#ifndef TESTPROPERTIES_H_
+#define TESTPROPERTIES_H_
 
 // Standard headers
 
 // Third party headers
 
+
 // User defined headers
+#include <InputProcessor.h>
 
 
 class Properties
 {
     public:
         // Constructor
-        Properties();
+        Properties(InputProcessor *inputProcessorObject);
         // Destructor
         ~Properties();
 
         // Input
-
+        InputProcessor *inputs;
+        
         // Variables
         double thermalConductivity = 1000.0; // W/mK
+
+
+        // Methods
+
+        
 };
 
-#endif /* PROPERTIES_H_ */
+#endif /* TESTPROPERTIES_H_ */
