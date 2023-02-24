@@ -20,6 +20,7 @@
 #include <Mesh.h>
 #include <Solver.h>
 #include <Discretization.h>
+#include <TestProperties.h>
 
 int main (int arg, char *argv[])
 {
@@ -51,12 +52,15 @@ int main (int arg, char *argv[])
 
     // initializing the objects
     InputProcessor inputProcessor;
+    
+    TestProperties testProperties(&inputProcessor);
     ControlVolumeMesh mesh(&inputProcessor);
-    FiniteVolumeMethod *FVM = new FiniteVolumeMethod(&inputProcessor);
-    Solver *amSolver = new Solver(&mesh, FVM);
+    FiniteVolumeMethod FVM(&inputProcessor);
+    
+    Solver amSolver(&mesh, &FVM);
 
-    amSolver->updateResults();
-    amSolver->writeData(inputProcessor.fileName);
+    amSolver.updateResults();
+    amSolver.writeData(inputProcessor.fileName);
 
     auto end = std::chrono::high_resolution_clock::now();
 

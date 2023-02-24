@@ -35,6 +35,10 @@ Solver::Solver
 
 }
 
+Solver::~Solver()
+{
+    // TODO Auto-generated destructor stub
+}
 
 void Solver::updateResults()
 {
