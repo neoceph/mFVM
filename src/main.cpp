@@ -52,7 +52,7 @@ int main (int arg, char *argv[])
     // initializing the objects
     InputProcessor inputProcessor;
     ControlVolumeMesh mesh(&inputProcessor);
-    FiniteVolumeMethod *FVM = new FiniteVolumeMethod();
+    FiniteVolumeMethod *FVM = new FiniteVolumeMethod(&inputProcessor);
     Solver *amSolver = new Solver(&mesh, FVM);
 
     amSolver->updateResults();
