@@ -8,19 +8,21 @@
 
 // User defined headers
 #include <InputProcessor.h>
+#include <Properties.h>
 
 
 class FiniteVolumeMethod
 {
     public:
         // Constructor
-        FiniteVolumeMethod(InputProcessor *inputProcessorObject);
+        FiniteVolumeMethod(InputProcessor *inputProcessorObject, Properties *propertiesObject);
         // Destructor
         ~FiniteVolumeMethod();
 
         // Input
         InputProcessor *inputs;
-        
+        Properties *properties;
+
         // Variables
         typedef Eigen::SparseMatrix<double> SpMat; // declares a column-major sparse matrix type of double
         std::vector<Eigen::Triplet<double>> triplets;

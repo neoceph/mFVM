@@ -10,7 +10,13 @@
 #include <InputProcessor.h>
 
 
-FiniteVolumeMethod::FiniteVolumeMethod(InputProcessor *inputProcessorObject):inputs(inputProcessorObject)
+FiniteVolumeMethod::FiniteVolumeMethod
+    (
+        InputProcessor *inputProcessorObject, 
+        Properties *propertiesObject
+    ):
+    inputs(inputProcessorObject), 
+    properties(propertiesObject)
 {
     // TODO Auto-generated constructor stub
     this->assembleMatrix();
@@ -35,4 +41,5 @@ void FiniteVolumeMethod::assembleMatrix()
     A.setFromTriplets(triplets.begin(), triplets.end());
 
     std::cout << "Sparse matrix A:\n" << A << std::endl;
+    std::cout << "Thermal Conductivity: " << properties->thermalConductivity << std::endl;
 }
