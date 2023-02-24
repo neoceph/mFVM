@@ -4,6 +4,7 @@
 // Standard headers
 
 // Third party headers
+#include <Eigen/Sparse>
 
 // User defined headers
 
@@ -19,6 +20,13 @@ class FiniteVolumeMethod
         // Input
 
         // Variables
+        typedef Eigen::SparseMatrix<double> SpMat; // declares a column-major sparse matrix type of double
+        std::vector<Eigen::Triplet<double>> triplets;
+        typedef Eigen::Triplet<double> T;
+        SpMat A;
+
+        // Methods
+        void assembleMatrix();
         
 };
 
