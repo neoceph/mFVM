@@ -55,7 +55,7 @@ int main (int arg, char *argv[])
     
     Properties Properties(&inputProcessor);
     ControlVolumeMesh mesh(&inputProcessor);
-    FiniteVolumeMethod FVM(&inputProcessor, &Properties);
+    FiniteVolumeMethod FVM(&inputProcessor, &Properties, &mesh);
     
     Solver amSolver(&mesh, &FVM);
 

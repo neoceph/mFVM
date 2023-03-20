@@ -22,7 +22,7 @@ class Properties
         InputProcessor *inputs;
         
         // Variables
-        double thermalConductivity = 1000.0; // W/mK
+        double thermalConductivity = 0.5; // W/mK
 
 
         // Methods

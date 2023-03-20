@@ -5,18 +5,21 @@
 #include <Eigen/Sparse>
 
 // User defined headers
-#include <Properties.h>
 #include <Discretization.h>
 #include <InputProcessor.h>
+#include <Mesh.h>
+#include <Properties.h>
 
 
 FiniteVolumeMethod::FiniteVolumeMethod
     (
         InputProcessor *inputProcessorObject, 
-        Properties *propertiesObject
+        Properties *propertiesObject,
+        ControlVolumeMesh *meshObject
     ):
     inputs(inputProcessorObject), 
-    properties(propertiesObject)
+    properties(propertiesObject),
+    mesh(meshObject)
 {
     // TODO Auto-generated constructor stub
     this->assembleMatrix();
@@ -32,22 +35,56 @@ FiniteVolumeMethod::~FiniteVolumeMethod()
 
 void FiniteVolumeMethod::assembleMatrix()
 {
-    int dimension = static_cast<int>(inputs->nx);
+    int dimension = static_cast<int>(inputs->nx-1);
 
     this->A.resize(dimension, dimension);
     this->b.resize(dimension);
+    this->initialTemperatures.resize(dimension);
  
+    b.setZero();
+
+    initialTemperatures(0) = inputs->westBoundaryTemperature;
+    initialTemperatures(dimension-1) = inputs->eastBoundaryTemperature;
+
+
     for (int i = 0; i < dimension; i++) 
     {
-        A.insert(i, i) = 2.0;
+
+        dx = mesh->cells[i].faces["East"].coordinate[0] - mesh->cells[i].faces["West"].coordinate[0];
+        dy = mesh->cells[i].faces["North"].coordinate[1] - mesh->cells[i].faces["South"].coordinate[1];
+        dz = mesh->cells[i].faces["Top"].coordinate[2] - mesh->cells[i].faces["Bottom"].coordinate[2];
+
+        b(i) = 2.0 * ((mesh->cells[i].faces["West"].area * properties->thermalConductivity) / (dx)) * initialTemperatures(i) + (inputs->heatFlux * mesh->cells[i].faces["West"].area) * dx;
+        
+        westFlux = (mesh->cells[i].faces["West"].area * properties->thermalConductivity) / (dx);
+        eastFlux = (mesh->cells[i].faces["East"].area * properties->thermalConductivity) / (dx);
+        
         if (i > 0) {
-            A.insert(i-1, i) = -1.0;
-            A.insert(i, i-1) = -1.0;
+            A.insert(i-1, i) = -eastFlux;
+            A.insert(i, i-1) = -westFlux;
         }
+
+        if (i == 0) {
+            pointSource = -2.0 * properties->thermalConductivity * mesh->cells[i].faces["West"].area / (dx);
+            westFlux = 0.0;
+        }
+        else if (i == dimension-1)
+        {
+            pointSource = -2.0 * properties->thermalConductivity * mesh->cells[i].faces["East"].area / (dx);
+            eastFlux = 0.0;
+        }
+        else
+        {
+            pointSource = 0.0;
+        }
+
+        pointFlux = westFlux + eastFlux - pointSource;
+
+        std::cout<<westFlux<<std::endl;
+        A.insert(i, i) = pointFlux;
     }
     A.makeCompressed();
 
-    b.setOnes();
     std::cout << "Sparse matrix A:\n" << A << std::endl;
     std::cout << "Sparse matrix b:\n" << b << std::endl;
 }
