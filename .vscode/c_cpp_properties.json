@@ -4,8 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/extLibs/**",
-                "${workspaceFolder}/src/**"
+                "${workspaceFolder}/src"
             ],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }

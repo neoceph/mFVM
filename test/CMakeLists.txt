@@ -4,7 +4,7 @@ set(Sources
     ExampleTests.cpp
 )
 
-file(GLOB FVMSources "FVM/sources/*.*")
+file(GLOB FVMSources "FVM/*.*")
   
 add_executable(${ProjectTest} ${Sources} ${FVMSources})
 

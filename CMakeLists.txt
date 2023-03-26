@@ -149,10 +149,9 @@ endif()
 include(CTest)
 enable_testing()
 
-add_subdirectory(
-    test
-    )
+add_subdirectory(test)
 
+    
 # adding the googletest library separately as including the subdirectory with the previous command did not work!
 add_subdirectory(
     extLibs/googletest EXCLUDE_FROM_ALL
