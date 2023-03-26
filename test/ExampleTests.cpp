@@ -20,3 +20,7 @@ TEST(ExampleTests, MAC){
     
 
 }
+
+TEST(ExampleTests1, Add){
+    EXPECT_EQ(7, add(3, 4));
+}

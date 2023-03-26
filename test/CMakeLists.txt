@@ -4,13 +4,17 @@ set(Sources
     ExampleTests.cpp
 )
 
-add_executable(${ProjectTest} ${Sources})
+set(FVMSources FVM/testFVM.cpp)
+  
+add_executable(${ProjectTest} ${Sources} ${FVMSources})
+
 
 
 target_link_libraries(
     ${ProjectTest}
-    PUBLIC ${CMAKE_PROJECT_NAME}_lib
+    PUBLIC 
     gtest_main
+    ${CMAKE_PROJECT_NAME}_lib
 )
 
 add_test(
