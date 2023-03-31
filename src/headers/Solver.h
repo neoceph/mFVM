@@ -30,11 +30,13 @@ class Solver
         std::map<std::string, vtkNew<vtkDoubleArray>> nodeScalarTest, nodalVariables, cellVariables;
         vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
         vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
+        double radius_x, radius_y, radius_z;
 
         // methods
         void updateResults();
         void writeData(char* fileName);
         void solve();
+        void buildPart();
 };
 
 

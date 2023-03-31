@@ -14,8 +14,9 @@ Solver::Solver
     (
         ControlVolumeMesh *meshObject,
         FiniteVolumeMethod *FVMObject
-    )
-    : mesh(meshObject), FVM(FVMObject)
+    ): 
+    mesh(meshObject), 
+    FVM(FVMObject)
                                
 {
     // initializing the scalars, vectors, and tensors
@@ -130,5 +131,13 @@ void Solver::solve()
         return;
     }
     std::cout << "Solution: " << x.transpose() << std::endl;
+
+}
+
+void Solver::buildPart()
+{
+    // TODO Auto-generated method stub
+    double test;
+    test = mesh->cells[0].faces["East"].coordinate[0];
 
 }
