@@ -28,11 +28,11 @@ ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):input
 
     this->controlVolumes->SetDimensions(inputs->nodeNumbers[0], inputs->nodeNumbers[1], inputs->nodeNumbers[2]);
     this->generatePoints(inputs->nodeNumbers, inputs->domainDimensions);
-    this->controlVolumes->SetPoints(this->points);
+    this->controlVolumes->SetPoints(this->points); // inserting the points to the control volume mesh and generating the mesh
 
     this->identifyCellVertex();
-    this->generateCellCenters();
     this->generateFaceAreas();
+    this->generateCellCenters();
 
 }
 
@@ -50,6 +50,8 @@ void ControlVolumeMesh::meshGeneration()
 
 void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, std::vector<double> domainDimensions)
 {
+    // Generating points based on provided node numbers and the domain dimension. Points are stored on vtkpoints object
+    
     double xStep, yStep, zStep;
 
     xStep = domainDimensions[0] / (nodeNumbers[0]-1);
@@ -83,7 +85,7 @@ void ControlVolumeMesh::generatePoints(std::vector<unsigned int> nodeNumbers, st
     }
 }
 
-
+// identifying the vertices of the cell and storing them by cell ID. The lowest vertex ID is the vertex of lowest x, y and z coordinate
 void ControlVolumeMesh::identifyCellVertex()
 {
     vtkCellIterator* it = this->controlVolumes->NewCellIterator(); // creating an iterator to iterate through the list of cells.
@@ -111,6 +113,7 @@ void ControlVolumeMesh::identifyCellVertex()
   
 }
 
+// generating the cell centers by averaging the coordinates of the vertices of the cell
 void ControlVolumeMesh::generateCellCenters()
 {
     for (auto& cells : cellVertexIds) // iterating through the cellVertexIds map
@@ -144,6 +147,8 @@ void ControlVolumeMesh::generateCellCenters()
     // }
 }
 
+
+// generating the face areas of the cell
 void ControlVolumeMesh::generateFaceAreas()
 {
     // clearing the pointsForSorting vector

@@ -43,7 +43,7 @@ TEST(SolverTest, solveTest)
     ControlVolumeMesh testMesh(&testInputProcessor);
     FiniteVolumeMethod testFVM(&testInputProcessor, &testProperties, &testMesh);
 
-    Solver testSolver(&testMesh, &testFVM);
+    Solver testSolver(&testFVM);
     testSolver.solve();
 
 

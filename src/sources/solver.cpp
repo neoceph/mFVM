@@ -12,15 +12,13 @@
 
 Solver::Solver
     (
-        ControlVolumeMesh *meshObject,
         FiniteVolumeMethod *FVMObject
-    ): 
-    mesh(meshObject), 
+    ):
     FVM(FVMObject)
                                
 {
     // initializing the scalars, vectors, and tensors
-    for (auto& stateVariable : mesh->stateVariables) {
+    for (auto& stateVariable : FVM->mesh->stateVariables) {
 
             int numberOfTensorElements = pow(3, stateVariable.second);
             
@@ -28,11 +26,11 @@ Solver::Solver
             
             this->nodalVariables[stateVariable.first]->SetName(stateVariable.first.c_str());
             this->nodalVariables[stateVariable.first]->SetNumberOfComponents(numberOfTensorElements);
-            this->nodalVariables[stateVariable.first]->SetNumberOfTuples(mesh->totalNodes);  
+            this->nodalVariables[stateVariable.first]->SetNumberOfTuples(FVM->mesh->totalNodes);  
 
             this->cellVariables[stateVariable.first]->SetName(stateVariable.first.c_str());
             this->cellVariables[stateVariable.first]->SetNumberOfComponents(numberOfTensorElements);
-            this->cellVariables[stateVariable.first]->SetNumberOfTuples(mesh->totalCells);  
+            this->cellVariables[stateVariable.first]->SetNumberOfTuples(FVM->mesh->totalCells);  
     }
 
 }
@@ -47,10 +45,10 @@ void Solver::updateResults()
     // int a;
     // a = mesh->totalNodes;
 
-    for (size_t i = 0; i < mesh->totalNodes; ++i)
+    for (size_t i = 0; i < FVM->mesh->totalNodes; ++i)
     {
 
-        for (auto& stateVariable : mesh->stateVariables) 
+        for (auto& stateVariable : FVM->mesh->stateVariables) 
         {
             switch(stateVariable.second)
             {
@@ -73,9 +71,9 @@ void Solver::updateResults()
 
     }
 
-    for (size_t i = 0; i < mesh->totalCells; ++i)
+    for (size_t i = 0; i < FVM->mesh->totalCells; ++i)
     {
-        for (auto& stateVariable : mesh->stateVariables) 
+        for (auto& stateVariable : FVM->mesh->stateVariables) 
         {
             switch(stateVariable.second)
             {
@@ -101,14 +99,14 @@ void Solver::writeData(char* fileName)
 {
     vtkNew<vtkXMLStructuredGridWriter> writer;
 
-    for (auto& stateVariable : mesh->stateVariables) 
+    for (auto& stateVariable : FVM->mesh->stateVariables) 
     {
-        mesh->controlVolumes->GetPointData()->AddArray(this->nodalVariables[stateVariable.first]);
-        mesh->controlVolumes->GetCellData()->AddArray(this->cellVariables[stateVariable.first]);
+        FVM->mesh->controlVolumes->GetPointData()->AddArray(this->nodalVariables[stateVariable.first]);
+        FVM->mesh->controlVolumes->GetCellData()->AddArray(this->cellVariables[stateVariable.first]);
     }
 
     writer->SetFileName(fileName);
-    writer->SetInputData(mesh->controlVolumes);
+    writer->SetInputData(FVM->mesh->controlVolumes);
     writer->Write();
 }
 
@@ -138,6 +136,6 @@ void Solver::buildPart()
 {
     // TODO Auto-generated method stub
     double test;
-    test = mesh->cells[0].faces["East"].coordinate[0];
+    test = FVM->mesh->cells[0].faces["East"].coordinate[0];
 
 }

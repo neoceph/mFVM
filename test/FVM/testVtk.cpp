@@ -33,7 +33,7 @@ TEST(VTKTest, solveLarge)
     ControlVolumeMesh testMesh(&testInputProcessor);
     FiniteVolumeMethod testFVM(&testInputProcessor, &testProperties, &testMesh);
 
-    Solver testSolver(&testMesh, &testFVM);
+    Solver testSolver(&testFVM);
     testSolver.solve();
 
     testSolver.buildPart();

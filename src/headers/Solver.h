@@ -18,12 +18,11 @@ class Solver
 {
     public:
         // Constructor
-        Solver(ControlVolumeMesh *meshObject, FiniteVolumeMethod *FVMObject);
+        Solver(FiniteVolumeMethod *FVMObject);
         // Destructor
         ~Solver();
 
         //Input
-        ControlVolumeMesh *mesh;
         FiniteVolumeMethod *FVM;
 
         //variables

@@ -57,7 +57,7 @@ int main (int arg, char *argv[])
     ControlVolumeMesh mesh(&inputProcessor);
     FiniteVolumeMethod FVM(&inputProcessor, &Properties, &mesh);
     
-    Solver amSolver(&mesh, &FVM);
+    Solver amSolver(&FVM);
 
     amSolver.solve();
     amSolver.updateResults();
