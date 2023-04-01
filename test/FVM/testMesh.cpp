@@ -42,13 +42,15 @@ TEST(MeshTest, meshCoordinateTest)
     Properties testProperties(&testInputProcessor);
     ControlVolumeMesh testMesh(&testInputProcessor);
 
-    double coordinate[3], expectedCoordinate[3];
+    double estimatedCoordinate[3];
+    double expectedCoordinate[3] = {1.0, 0.0, 0.0};
 
-    // expectedCoordinate = {1.0, 0.0, 0.0};
-    testMesh.points->GetPoint(1, coordinate);
-    std::cout << "Coordinate of the first point: " << coordinate << std::endl;
-
-    EXPECT_EQ(7, 7);
+    testMesh.points->GetPoint(1, estimatedCoordinate);
+    
+    for (int i = 0; i < 3; i++)
+    {
+        ASSERT_NEAR(expectedCoordinate[i], estimatedCoordinate[i], 1e-6);
+    }
 }
 
 TEST(MeshTest, meshingProgressTest)
