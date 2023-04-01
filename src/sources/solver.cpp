@@ -128,7 +128,8 @@ void Solver::solve()
         std::cout << "Solving failed" << std::endl;
         return;
     }
-    std::cout << "Solution: " << x.transpose() << std::endl;
+    // std::cout << "Solution Successful!" << x.transpose() << std::endl;
+    std::cout << "Solution Successful!" << std::endl;
 
 }
 

@@ -12,12 +12,6 @@
 // User defined headers
 #include <Mesh.h>
 
-
-// ControlVolumeMesh::ControlVolumeMesh(
-//     std::vector<unsigned int> nodeNumbers, 
-//     std::vector<double> domainDimensions, 
-//     std::set<std::pair<std::string, int>> stateVariables
-//     )
 ControlVolumeMesh::ControlVolumeMesh(InputProcessor *inputProcessorObject):inputs(inputProcessorObject)
 {
     

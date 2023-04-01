@@ -79,12 +79,7 @@ void FiniteVolumeMethod::assembleMatrix()
         }
 
         pointFlux = westFlux + eastFlux - pointSource;
-
-        std::cout<<westFlux<<std::endl;
         A.insert(i, i) = pointFlux;
     }
     A.makeCompressed();
-
-    std::cout << "Sparse matrix A:\n" << A << std::endl;
-    std::cout << "Sparse matrix b:\n" << b << std::endl;
 }
