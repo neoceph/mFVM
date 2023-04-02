@@ -26,34 +26,55 @@
 // #include "Example.hpp"
 #include<gtest/gtest.h>
 
-TEST(MeshTest, meshCoordinateTest)
-{
-    InputProcessor testInputProcessor;
+class MeshTest : public ::testing::Test {
+protected:
+  
+  InputProcessor* testInputProcessor;
+  Properties* testProperties;
+  ControlVolumeMesh* testMesh;
+
+  void SetUp() override {
+    // code to set up the test fixture
+    testInputProcessor = new InputProcessor();
 
     // setup the problem domains
-    testInputProcessor.westBoundaryTemperature = 100.0;
-    testInputProcessor.eastBoundaryTemperature = 200.0;
-    testInputProcessor.heatFlux = 1000e3; // W/m^21
-    testInputProcessor.nodeNumbers = {2, 2, 2};
-    testInputProcessor.domainDimensions = {1.0, 1.0, 1.0};
-    testInputProcessor.myList = {
+    testInputProcessor->westBoundaryTemperature = 100.0;
+    testInputProcessor->eastBoundaryTemperature = 200.0;
+    testInputProcessor->heatFlux = 1000e3; // W/m^21
+    testInputProcessor->nodeNumbers = {2, 2, 2};
+    testInputProcessor->domainDimensions = {1.0, 1.0, 1.0};
+    testInputProcessor->myList = {
                 {"Temp", 0}};
 
-    Properties testProperties(&testInputProcessor);
-    ControlVolumeMesh testMesh(&testInputProcessor);
+    testProperties = new Properties(testInputProcessor);
+    testMesh = new ControlVolumeMesh(testInputProcessor);
+  }
 
+  void TearDown() override {
+    // code to tear down the test fixture
+    delete testInputProcessor;
+    delete testProperties;
+    delete testMesh;
+  }
+};
+
+TEST_F(MeshTest, meshCoordinateTest)
+{
     double estimatedCoordinate[3];
     double expectedCoordinate[3] = {1.0, 0.0, 0.0};
 
-    testMesh.points->GetPoint(1, estimatedCoordinate);
+
+    testMesh->points->GetPoint(1, estimatedCoordinate);
     
     for (int i = 0; i < 3; i++)
     {
         ASSERT_NEAR(expectedCoordinate[i], estimatedCoordinate[i], 1e-6);
     }
-}
 
-TEST(MeshTest, meshingProgressTest)
+};
+
+
+TEST_F(MeshTest, meshingProgressTest)
 {
     const int total = 100; // total number of iterations
     int progress = 0;   
@@ -74,4 +95,4 @@ TEST(MeshTest, meshingProgressTest)
         std::cout << "[" << std::string(progress, '#') << std::string(total - progress, ' ') << "] " << percent << "%\r";
         std::cout.flush();
     }
-}
+};
