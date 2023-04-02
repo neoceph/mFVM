@@ -32,6 +32,7 @@ protected:
   InputProcessor* testInputProcessor;
   Properties* testProperties;
   ControlVolumeMesh* testMesh;
+  FiniteVolumeMethod* testFVM;
 
   void SetUp() override {
     // code to set up the test fixture
@@ -48,6 +49,8 @@ protected:
 
     testProperties = new Properties(testInputProcessor);
     testMesh = new ControlVolumeMesh(testInputProcessor);
+    testFVM = new FiniteVolumeMethod(testInputProcessor, testProperties, testMesh);
+    
   }
 
   void TearDown() override {
@@ -61,15 +64,29 @@ protected:
 TEST_F(MeshTest, meshCoordinateTest)
 {
     double estimatedCoordinate[3];
-    double expectedCoordinate[3] = {1.0, 0.0, 0.0};
+    double expectedCoordinate[3] = {0.0, 0.0, 0.0};
 
-
-    testMesh->points->GetPoint(1, estimatedCoordinate);
-    
-    for (int i = 0; i < 3; i++)
+    expectedCoordinate[2] = 0.0;
+    for (int k=0; k < 2; k++)
     {
-        ASSERT_NEAR(expectedCoordinate[i], estimatedCoordinate[i], 1e-6);
+        expectedCoordinate[2] += k;
+        expectedCoordinate[1] = 0;
+        for (int j=0; j<2; j++)
+        {
+            expectedCoordinate[1] += j;
+            expectedCoordinate[0] = 0;
+            for (int i=0; i<2; i++)
+            {
+                expectedCoordinate[0] += i;
+                testMesh->points->GetPoint(i+2*j+2*2*k, estimatedCoordinate);
+                for (int i = 0; i < 3; i++)
+                {
+                    ASSERT_NEAR(expectedCoordinate[i], estimatedCoordinate[i], 1e-6);
+                }
+            }
+        }
     }
+    
 
 };
 
