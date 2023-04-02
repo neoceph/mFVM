@@ -35,7 +35,7 @@ FiniteVolumeMethod::~FiniteVolumeMethod()
 
 void FiniteVolumeMethod::assembleMatrix()
 {
-    int dimension = static_cast<int>(inputs->nx-1);
+    int dimension = static_cast<int>(inputs->nodeNumbers[0]-1);
 
     this->A.resize(dimension, dimension);
     this->b.resize(dimension);

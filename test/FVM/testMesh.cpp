@@ -35,7 +35,7 @@ protected:
   FiniteVolumeMethod* testFVM;
 
   void SetUp() override {
-    // code to set up the test fixture
+    // code to set up the test fixture   
     testInputProcessor = new InputProcessor();
 
     // setup the problem domains
@@ -61,10 +61,9 @@ protected:
   }
 };
 
-TEST_F(MeshTest, meshCoordinateTest)
+TEST_F(MeshTest, meshVertexTest)
 {
-    double estimatedCoordinate[3];
-    double expectedCoordinate[3] = {0.0, 0.0, 0.0};
+    double estimatedCoordinate[3], expectedCoordinate[3] = {0.0, 0.0, 0.0};
 
     expectedCoordinate[2] = 0.0;
     for (int k=0; k < 2; k++)
@@ -85,6 +84,54 @@ TEST_F(MeshTest, meshCoordinateTest)
                 }
             }
         }
+    }
+    
+
+};
+
+TEST_F(MeshTest, meshFaceCenterTest)
+{
+    int j;
+    double estimatedValue, expectedValue;
+    double expectedCellCenterCoordinate[3] = {0.0, 0.5, 0.5};
+    std::map<std::string, double> expectedFaceArea{{"East", 1.0}, {"West", 1.0}, {"North", 1.0}, {"South", 1.0}, {"Top", 1.0}, {"Bottom", 1.0}};
+    std::map<std::string, std::array<double, 3>> expectedFaceCoordinate{
+        {"East", {1.0, 0.5, 0.5}}, 
+        {"West", {0.0, 0.5, 0.5}}, 
+        {"North", {0.5, 1.0, 0.5}}, 
+        {"South", {0.5, 0.0, 0.5}}, 
+        {"Top", {0.5, 0.5, 1.0}}, 
+        {"Bottom", {0.5, 0.5, 0.0}},
+        };
+
+    for (const auto& pair: expectedFaceArea)
+    {
+        estimatedValue = testMesh->cells[0].faces[pair.first].area;
+        expectedValue = pair.second;
+        ASSERT_NEAR(expectedValue, estimatedValue, 1e-6);
+        
+        for (const auto& coordinatePair: expectedFaceCoordinate)
+        {
+             for (int i = 0; i < 3; i++)   
+             {
+                estimatedValue = testMesh->cells[0].faces[coordinatePair.first].coordinate[i];
+                expectedValue = coordinatePair.second[i];
+                ASSERT_NEAR(expectedValue, estimatedValue, 1e-6);
+
+             }
+        }
+    }
+    
+
+};
+
+TEST_F(MeshTest, meshCellCenterTest)
+{
+    double expectedCellCenterCoordinate[3] = {0.5, 0.5, 0.5};
+
+    for (int i = 0; i < 3; i++)
+    {
+        ASSERT_NEAR(expectedCellCenterCoordinate[i], testMesh->cells[0].coordinate[i], 1e-6);
     }
     
 
