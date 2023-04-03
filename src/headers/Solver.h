@@ -27,13 +27,14 @@ class Solver
 
         //variables
         std::map<std::string, vtkNew<vtkDoubleArray>> nodeScalarTest, nodalVariables, cellVariables;
-        vtkNew<vtkDoubleArray> nodeScalars, nodeVectors, nodeTensors;
-        vtkNew<vtkDoubleArray> cellScalars, cellVectors, cellTensors;
+        std::vector<double> nodeScalars, nodeVectors, nodeTensors;
+        std::vector<double> cellScalars, cellVectors, cellTensors;
         double radius_x, radius_y, radius_z;
 
         // methods
-        void updateAllResults();
-        void writeData(char* fileName);
+        void updateResults();
+        void updateResults(char *stateVariableName, std::vector<double> nodalScalarVariable, std::vector<double> cellScalarVariable);
+        void writeData(char *fileName);
         void solve();
         void buildPart();
 };

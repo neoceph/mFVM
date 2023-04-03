@@ -60,7 +60,7 @@ int main (int arg, char *argv[])
     Solver amSolver(&FVM);
 
     amSolver.solve();
-    amSolver.updateAllResults();
+    amSolver.updateResults();
     amSolver.writeData(inputProcessor.fileName);
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -40,7 +40,7 @@ Solver::~Solver()
     // TODO Auto-generated destructor stub
 }
 
-void Solver::updateAllResults()
+void Solver::updateResults()
 {
     // int a;
     // a = mesh->totalNodes;
@@ -92,6 +92,22 @@ void Solver::updateAllResults()
 
             }            
         }
+    }
+}
+
+void Solver::updateResults(char* stateVariableName, std::vector<double> nodalScalarVariable, std::vector<double> cellScalarVariable)
+{
+    std::cout<<"State Variable Name :" << stateVariableName << std::endl;
+    for (int i=0; i < nodalScalarVariable.size(); i++)
+    {
+        // std::cout<<"Nodal Scalar Variable Name :" << nodalScalarVariable[i] << std::endl;
+        this->nodalVariables[stateVariableName]->SetValue(i, nodalScalarVariable[i]);
+    }
+
+    for (int i=0; i < cellScalarVariable.size(); i++)
+    {
+        // std::cout<<"Nodal Scalar Variable Name :" << nodalScalarVariable[i] << std::endl;
+        this->cellVariables[stateVariableName]->SetValue(i, cellScalarVariable[i]);
     }
 }
 

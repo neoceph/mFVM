@@ -43,12 +43,10 @@ protected:
     testInputProcessor->westBoundaryTemperature = 100.0;
     testInputProcessor->eastBoundaryTemperature = 200.0;
     testInputProcessor->heatFlux = 1000e3; // W/m^21
-    testInputProcessor->nodeNumbers = {5, 5, 5};
+    testInputProcessor->nodeNumbers = {100, 100, 100};
     testInputProcessor->domainDimensions = {1.0, 1.0, 1.0};
-    testInputProcessor->myList = {
-                {"Temp", 0}};
     testInputProcessor->stateVariables = {
-                {"Temp", 0}};                
+                {"Solid", 0}};                
 
     testProperties = new Properties(testInputProcessor);
     testMesh = new ControlVolumeMesh(testInputProcessor);
@@ -70,6 +68,48 @@ protected:
 TEST_F(LargePartTest, vtkLargePart)
 {
     char fileName[30] = "testLargePart.vts";
-    testSolver->updateAllResults();
+    char stateVariableName[30] = "Solid";
+    double coordinate[3], radius;
+    double minRadius = 0.5;
+
+    for (int i=0; i<testMesh->totalNodes; i++)
+    {
+        testMesh->points->GetPoint(i, coordinate);
+        radius = sqrt(pow(coordinate[0], 2) + pow(coordinate[1], 2));
+        if (radius < minRadius)
+        {
+            // testMesh->nodeScalars->SetValue(i, 0.0);
+            testSolver->nodeScalars.push_back(0.0);
+            // std::cout<<testSolver->nodeScalars[i]<<std::endl;
+        }
+        else
+        {
+            testSolver->nodeScalars.push_back(1.0);
+            // std::cout<<testSolver->nodeScalars[i]<<std::endl;
+        }
+    }
+
+
+    for (int i=0; i<testMesh->totalCells; i++)
+    {
+        coordinate[0] = testMesh->cells[0].coordinate[0];
+        coordinate[1] = testMesh->cells[i].coordinate[1];
+        coordinate[2] = testMesh->cells[i].coordinate[2];
+
+        radius = sqrt(pow(coordinate[0], 2) + pow(coordinate[1], 2));
+        if (radius < minRadius)
+        {
+            // testMesh->nodeScalars->SetValue(i, 0.0);
+            testSolver->cellScalars.push_back(0.0);
+            // std::cout<<testSolver->cellScalars[i]<<std::endl;
+        }
+        else
+        {
+            testSolver->cellScalars.push_back(1.0);
+            // std::cout<<testSolver->cellScalars[i]<<std::endl;
+        }
+    }
+
+    testSolver->updateResults(stateVariableName, testSolver->nodeScalars, testSolver->cellScalars);
     testSolver->writeData(fileName);
 }
