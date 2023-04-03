@@ -37,6 +37,6 @@ TEST(VTKTest, solveLarge)
     testSolver.solve();
 
     testSolver.buildPart();
-    testSolver.updateResults();
+    testSolver.updateAllResults();
     testSolver.writeData(testInputProcessor.fileName);
 }

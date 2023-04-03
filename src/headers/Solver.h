@@ -32,7 +32,7 @@ class Solver
         double radius_x, radius_y, radius_z;
 
         // methods
-        void updateResults();
+        void updateAllResults();
         void writeData(char* fileName);
         void solve();
         void buildPart();

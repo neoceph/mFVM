@@ -58,6 +58,7 @@ protected:
     delete testInputProcessor;
     delete testProperties;
     delete testMesh;
+    delete testFVM;
   }
 };
 

@@ -40,7 +40,7 @@ Solver::~Solver()
     // TODO Auto-generated destructor stub
 }
 
-void Solver::updateResults()
+void Solver::updateAllResults()
 {
     // int a;
     // a = mesh->totalNodes;
