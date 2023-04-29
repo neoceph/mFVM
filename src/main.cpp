@@ -22,6 +22,18 @@
 #include <Discretization.h>
 #include <Properties.h>
 
+/**
+ * @brief   Main function
+ * 
+ * The distance between two points \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$ is given by
+ * \f$(\sqrt{(x_2-x_1)^2+(y_2-y_1)^2})\f$.
+ * 
+ * @param arg for the input argument count.
+ * @param argv for the input file name
+ * @return int for returning zero
+ */
+
+
 int main (int arg, char *argv[])
 {
 
