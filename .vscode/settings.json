@@ -74,5 +74,7 @@
       "bit": "cpp",
       "armadillo": "cpp"
     },
-    "esbonio.sphinx.confDir": ""
+    "esbonio.sphinx.buildDir" : "${workspaceFolder}/build/doc/usermanual/documentation/html",
+    "esbonio.sphinx.confDir"  : "${workspaceFolder}/doc/readthedocs",
+    "esbonio.sphinx.srcDir"   : "${workspaceFolder}/doc/readthedocs"
 }
