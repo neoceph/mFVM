@@ -43,8 +43,8 @@ protected:
     testInputProcessor->westBoundaryTemperature = 100.0;
     testInputProcessor->eastBoundaryTemperature = 200.0;
     testInputProcessor->heatFlux = 1000e3; // W/m^21
-    testInputProcessor->nodeNumbers = {100, 100, 100};
-    testInputProcessor->domainDimensions = {1.0, 1.0, 1.0};
+    testInputProcessor->nodeNumbers = {150, 250, 450};
+    testInputProcessor->domainDimensions = {2.5, 2.5, 4.5};
     testInputProcessor->stateVariables = {
                 {"Solid", 0}};                
 
@@ -70,7 +70,7 @@ TEST_F(LargePartTest, vtkLargePart)
     char fileName[30] = "testLargePart.vts";
     char stateVariableName[30] = "Solid";
     double coordinate[3], radius;
-    double minRadius = 0.5;
+    double minRadius = 2.0;
 
     for (int i=0; i<testMesh->totalNodes; i++)
     {
