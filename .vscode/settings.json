@@ -73,5 +73,6 @@
       "variant": "cpp",
       "bit": "cpp",
       "armadillo": "cpp"
-    }
+    },
+    "esbonio.sphinx.confDir": ""
 }
