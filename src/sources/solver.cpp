@@ -111,6 +111,16 @@ void Solver::updateResults(char* stateVariableName, std::vector<double> nodalSca
     }
 }
 
+void Solver::updateResults(char* stateVariableName, std::vector<double> nodalScalarVariable)
+{
+    std::cout<<"State Variable Name :" << stateVariableName << std::endl;
+    for (int i=0; i < nodalScalarVariable.size(); i++)
+    {
+        // std::cout<<"Nodal Scalar Variable Name :" << nodalScalarVariable[i] << std::endl;
+        this->nodalVariables[stateVariableName]->SetValue(i, nodalScalarVariable[i]);
+    }
+}
+
 void Solver::writeData(char* fileName)
 {
     vtkNew<vtkXMLStructuredGridWriter> writer;

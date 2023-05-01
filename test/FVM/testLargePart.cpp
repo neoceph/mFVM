@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <typeinfo>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 
@@ -43,10 +44,13 @@ protected:
     testInputProcessor->westBoundaryTemperature = 100.0;
     testInputProcessor->eastBoundaryTemperature = 200.0;
     testInputProcessor->heatFlux = 1000e3; // W/m^21
-    testInputProcessor->nodeNumbers = {150, 250, 450};
-    testInputProcessor->domainDimensions = {2.5, 2.5, 4.5};
+    // testInputProcessor->nodeNumbers = {150, 250, 450}; // this settings worked for the largest part that run on the desktop ubuntu
+    // testInputProcessor->nodeNumbers = {50, 50, 150};
+    // testInputProcessor->domainDimensions = {2.5, 2.5, 4.5}; // original dimensions of the NIST Part
+    testInputProcessor->nodeNumbers = {250, 250, 25};
+    testInputProcessor->domainDimensions = {2.5, 2.5, 0.25}; // reduced dimensions along z-direction of the NIST Part
     testInputProcessor->stateVariables = {
-                {"Solid", 0}};                
+                {"SolidPhase", 0}};                
 
     testProperties = new Properties(testInputProcessor);
     testMesh = new ControlVolumeMesh(testInputProcessor);
@@ -68,7 +72,7 @@ protected:
 TEST_F(LargePartTest, vtkLargePart)
 {
     char fileName[30] = "testLargePart.vts";
-    char stateVariableName[30] = "Solid";
+    char stateVariableName[30] = "SolidPhase";
     double coordinate[3], radius;
     double minRadius = 2.0;
 
@@ -111,5 +115,35 @@ TEST_F(LargePartTest, vtkLargePart)
     }
 
     testSolver->updateResults(stateVariableName, testSolver->nodeScalars, testSolver->cellScalars);
+    testSolver->writeData(fileName);
+}
+
+
+TEST_F(LargePartTest, vtkStochasticLargePart)
+{
+    char fileName[30] = "testStochasticLargePart.vts";
+    char stateVariableName[30] = "SolidPhase";
+    double coordinate[3], radius;
+    double minRadius = 2.0;
+    std::srand(std::time(NULL));
+
+    for (int i=0; i<testMesh->totalNodes; i++)
+    {
+        testMesh->points->GetPoint(i, coordinate);
+        radius = sqrt(pow(coordinate[0], 2) + pow(coordinate[1], 2));
+        if (radius < minRadius)
+        {
+            testSolver->nodeScalars.push_back(0.0);
+        }
+        else
+        {
+            float random_number = (float)rand() / RAND_MAX;
+            random_number = 0.5 + 0.5*random_number;
+            testSolver->nodeScalars.push_back(random_number);
+        }
+    }
+
+
+    testSolver->updateResults(stateVariableName, testSolver->nodeScalars);
     testSolver->writeData(fileName);
 }

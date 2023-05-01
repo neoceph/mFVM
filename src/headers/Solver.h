@@ -34,6 +34,7 @@ class Solver
         // methods
         void updateResults();
         void updateResults(char *stateVariableName, std::vector<double> nodalScalarVariable, std::vector<double> cellScalarVariable);
+        void updateResults(char *stateVariableName, std::vector<double> nodalScalarVariable);
         void writeData(char *fileName);
         void solve();
         void buildPart();
