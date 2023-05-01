@@ -10,8 +10,6 @@ is solving Navier-Stokes equation and Energy equation to calculate the temperatu
 
 :Version: |version|
 
-.. math::
-      \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \vec{u}) = 0
 
 .. toctree::
    :maxdepth: 2
@@ -25,3 +23,5 @@ Getting Started
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. include:: theories_equation.rst
