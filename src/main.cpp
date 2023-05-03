@@ -31,6 +31,8 @@
  * @param arg for the input argument count.
  * @param argv for the input file name
  * @return int for returning zero
+ * \cite Hale
+ * This was a citation example
  */
 
 

@@ -5,8 +5,8 @@
 
 Welcome to mFVM's documentation!
 ==================================
-mFVM is a finite volume based laser powder based fusion computational analysis tool. In the current version mFVM
-is solving Navier-Stokes equation and Energy equation to calculate the temperature distribution, solid fraction, melt pool etc for a given spot and scan laser.
+mFVM is a finite volume-based laser powder-based fusion computational analysis tool. In the current version mFVM
+It solves the Navier-Stokes equation and Energy equation to calculate the temperature distribution, solid fraction, melt pool, etc, for a given spot and scan laser.
 
 :Version: |version|
 
