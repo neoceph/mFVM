@@ -18,6 +18,8 @@
 - Latexmk (required for pdf generation)
     - If not available can be installed with `sudo apt-get update -y` and next `sudo apt-get install -y latexmk`
     - For .sty file not found use `apt install texlive-latex-extra`
+- Use of ROOT libraries may require dependencies to be installed.
+    - Specific instructions to install dependencies for Ubuntu can be found [here](https://root.cern/install/dependencies/#ubuntu-and-other-debian-based-distributions)
 - Rpmbuild (required for .rpm package generation) 
     - Creating rpm will require a rpmbuild executable. To get rpm installed issue `sudo apt-get install rpm`
 - NSIS 3.0 and up (required for windows installer package generation)
