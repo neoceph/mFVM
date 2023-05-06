@@ -13,7 +13,11 @@
 #include <vtkDoubleArray.h>
 #include <vtkNew.h>
 #include <vtkXMLStructuredGridWriter.h>
-
+#include <TCanvas.h>
+#include <TGraph.h>
+#include <TAxis.h>
+#include <Math/Math.h>
+#include <Math/GenVector/VectorUtil.h>
 
 // User defined headers
 #include <version.h>
@@ -43,5 +47,23 @@ TEST(PhysicsMulTest, MultiplyTest)
 }
 
 TEST(ExampleTests, DemonstrateGTestMacros){
+    EXPECT_TRUE(true);
+}
+
+TEST(GraphTests, PrintSineWave){
+    int n = 1000;
+    double x[n], y[n];
+    for (int i = 0; i < n; i++) {
+        x[i] = i * 0.01;
+        y[i] = ROOT::Math::sin(x[i]);
+    }
+    TGraph graph(n, x, y);
+    graph.Draw("AL");
+    graph.GetXaxis()->SetTitle("x");
+    graph.GetYaxis()->SetTitle("y");
+    TCanvas canvas("canvas", "canvas", 800, 600);
+    canvas.cd();
+    graph.Draw("AL");
+    canvas.SaveAs("sine_wave.png");
     EXPECT_TRUE(true);
 }

@@ -15,7 +15,8 @@ target_link_libraries(
     PUBLIC gtest_main
     PUBLIC ${CMAKE_PROJECT_NAME}_lib
     PUBLIC ${ARMADILLO_LIBRARIES}
-    PUBLIC ${VTK_LIBRARIES} 
+    PUBLIC ${VTK_LIBRARIES}
+    PUBLIC ${ROOT_LIBRARIES}
 )
 
 add_test(

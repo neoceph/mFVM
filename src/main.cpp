@@ -13,6 +13,7 @@
 #include <vtkDoubleArray.h>
 #include <vtkNew.h>
 #include <vtkXMLStructuredGridWriter.h>
+#include "TCanvas.h"
 
 
 // User defined headers

@@ -27,7 +27,11 @@ set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 # settting the project name.
 project(${Project} C CXX)
 
+# setting external library variables
 
+set(ROOT_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/root/install")
+set(ROOT_DIR ${ROOT_INSTALL_DIR}/cmake)
+set(CMAKE_BUILD_TYPE_INIT "RELEASE")
 
 ############ Find Package Stuffs########################################################
 ########################################################################################
@@ -40,6 +44,30 @@ endif()
 
 find_package(VTK)
 find_package(Armadillo CONFIG REQUIRED)
+
+
+find_package(ROOT)
+
+message("Directory: ${ROOT_INSTALL_DIR}")
+message("ROOT_INCLUDE_DIRS: ${ROOT_INCLUDE_DIRS}, ROOT_FOUND: ${ROOT_FOUND}, ROOT_VERSION: ${ROOT_VERSION}")
+
+include(ExternalProject)
+if(NOT ROOT_FOUND)
+    message("Root not found, building from source")
+    ExternalProject_Add(
+    root
+    GIT_REPOSITORY https://github.com/root-project/root.git
+    GIT_TAG v6-28-02
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/src"
+    BINARY_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/build"
+    CMAKE_ARGS 
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_INSTALL_PREFIX=${ROOT_INSTALL_DIR} -Dall=ON
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    )
+    find_package(ROOT)
+    message("Root installed and Root version ${ROOT_VERSION} found")
+endif()
 
 
 
@@ -81,8 +109,9 @@ include_directories(
     ${ProjectLib} "${CMAKE_SOURCE_DIR}/src/headers"
     )
 include_directories(${ARMADILLO_INCLUDE_DIRS})
+include_directories(${ROOT_INSTALL_DIR}/include)
 
-
+link_directories(${ROOT_INSTALL_DIR}/lib/)
 
 # generating executable program by specifying the location of the file
 
@@ -105,6 +134,7 @@ target_link_libraries(
     PUBLIC ${VTK_LIBRARIES} 
     PUBLIC ${ProjectLib}
     PUBLIC ${ARMADILLO_LIBRARIES}
+    PUBLIC ${ROOT_LIBRARIES}
     )
 
  
