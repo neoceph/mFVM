@@ -31,7 +31,7 @@ project(${Project} C CXX)
 
 set(ROOT_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/root/install")
 set(ROOT_DIR ${ROOT_INSTALL_DIR}/cmake)
-set(CMAKE_BUILD_TYPE_INIT "RELEASE")
+set(ROOT_BUILD_TYPE "RELEASE")
 
 ############ Find Package Stuffs########################################################
 ########################################################################################
@@ -48,27 +48,32 @@ find_package(Armadillo CONFIG REQUIRED)
 
 find_package(ROOT)
 
-message("Directory: ${ROOT_INSTALL_DIR}")
-message("ROOT_INCLUDE_DIRS: ${ROOT_INCLUDE_DIRS}, ROOT_FOUND: ${ROOT_FOUND}, ROOT_VERSION: ${ROOT_VERSION}")
-
 include(ExternalProject)
 if(NOT ROOT_FOUND)
     message("Root not found, building from source")
+    message("${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}")
     ExternalProject_Add(
-    root
-    GIT_REPOSITORY https://github.com/root-project/root.git
-    GIT_TAG v6-28-02
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/src"
-    BINARY_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/build"
-    CMAKE_ARGS 
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    -DCMAKE_INSTALL_PREFIX=${ROOT_INSTALL_DIR} -Dall=ON
-    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-    )
+        ROOT
+        GIT_REPOSITORY https://github.com/root-project/root.git
+        GIT_TAG v6-28-02
+        SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/src"
+        BINARY_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/build"
+        CMAKE_ARGS 
+        -DCMAKE_BUILD_TYPE=${ROOT_BUILD_TYPE}
+        -DCMAKE_INSTALL_PREFIX=${ROOT_INSTALL_DIR} -Dall=ON
+        -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+        )
+    add_custom_target(
+        Rescan 
+        ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} --fresh
+        DEPENDS ROOT
+        )
     find_package(ROOT)
-    message("Root installed and Root version ${ROOT_VERSION} found")
+    message("Rescanning and rebuilding cmake")
+else()
+    message("Root installed and Root version ${ROOT_VERSION} found")    
+    add_custom_target(Rescan)
 endif()
-
 
 
 
@@ -120,6 +125,7 @@ link_directories(${ROOT_INSTALL_DIR}/lib/)
 add_executable(
     ${Project} src/main.cpp  ${version_file}
     )
+add_dependencies(${Project} Rescan)    
 add_executable(
     vtkExample src/sources/write.cpp
 )
@@ -136,8 +142,6 @@ target_link_libraries(
     PUBLIC ${ARMADILLO_LIBRARIES}
     PUBLIC ${ROOT_LIBRARIES}
     )
-
- 
 
 vtk_module_autoinit(
   TARGETS vtkExample

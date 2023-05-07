@@ -7,7 +7,7 @@ set(Sources
 file(GLOB FVMSources "FVM/*.*")
   
 add_executable(${ProjectTest} ${Sources} ${FVMSources})
-
+add_dependencies(${ProjectTest} Rescan)
 
 
 target_link_libraries(
