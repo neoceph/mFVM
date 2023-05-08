@@ -73,6 +73,7 @@ if(NOT ROOT_FOUND)
 else()
     message("Root installed and Root version ${ROOT_VERSION} found")    
     add_custom_target(Rescan)
+    file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/extLibs/root/src ${CMAKE_SOURCE_DIR}/extLibs/root/build)
 endif()
 
 
