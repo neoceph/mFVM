@@ -9,7 +9,7 @@ file(GLOB FVMSources "FVM/*.*")
 add_executable(${ProjectTest} ${Sources} ${FVMSources})
 add_dependencies(${ProjectTest} Rescan Rescan_PETSC)
 
-if(PETSC_FOUND)
+# if(PETSC_FOUND)
     target_link_libraries(
         ${ProjectTest}
         PUBLIC gtest_main
@@ -17,9 +17,9 @@ if(PETSC_FOUND)
         PUBLIC ${ARMADILLO_LIBRARIES}
         PUBLIC ${VTK_LIBRARIES}
         PUBLIC ${ROOT_LIBRARIES}
-        # PkgConfig::PETSC
+        INTERFACE PkgConfig::PETSC
     )
-endif()
+# endif()
 
 add_test(
     NAME ${ProjectTest}

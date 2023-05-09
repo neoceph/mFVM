@@ -192,7 +192,7 @@ if(PETSC_FOUND)
         PUBLIC ${ProjectLib}
         PUBLIC ${ARMADILLO_LIBRARIES}
         PUBLIC ${ROOT_LIBRARIES}
-        PkgConfig::PETSC
+        PUBLIC PkgConfig::PETSC
         )
 endif()
 
