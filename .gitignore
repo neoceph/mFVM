@@ -6,5 +6,6 @@ doc/readthedocs/_build/*
 doc/readthedocs/_static/
 doc/readthedocs/_templates
 extLibs/root/
+extLibs/petsc/
 # Log files
 *.log

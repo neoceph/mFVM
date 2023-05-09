@@ -27,11 +27,26 @@ set(source_files "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 # settting the project name.
 project(${Project} C CXX)
 
+# finding processor count
+include(ProcessorCount)
+ProcessorCount(N)
+
 # setting external library variables
 
 set(ROOT_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/root/install")
 set(ROOT_DIR ${ROOT_INSTALL_DIR}/cmake)
 set(ROOT_BUILD_TYPE "RELEASE")
+
+
+# setting variables for PETSC
+
+set(PETSC_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/src")
+set(PETSC_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/install")
+set(PETSC_BUILD_TYPE "RELEASE")
+set(PETSC_CONFIGURE_COMMAND "./configure")
+set(PETSC_DIR ${PETSC_INSTALL_DIR})
+set(PKG_CONFIG_PATH ${PETSC_INSTALL_DIR}/lib/pkgconfig)
+set(ENV{PKG_CONFIG_PATH} ${PETSC_INSTALL_DIR}/lib/pkgconfig)
 
 ############ Find Package Stuffs########################################################
 ########################################################################################
@@ -74,6 +89,40 @@ else()
     message("Root installed and Root version ${ROOT_VERSION} found")    
     add_custom_target(Rescan)
     file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/extLibs/root/src ${CMAKE_SOURCE_DIR}/extLibs/root/build)
+endif()
+
+
+
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PETSC IMPORTED_TARGET PETSc)
+
+if(NOT PETSC_FOUND)
+    ExternalProject_Add(
+            PETSC
+            GIT_REPOSITORY https://gitlab.com/petsc/petsc.git
+            GIT_TAG release
+            SOURCE_DIR ${PETSC_SOURCE_DIR}
+            BINARY_DIR ${PETSC_SOURCE_DIR}
+            CONFIGURE_COMMAND ./configure -E 
+                --prefix=${PETSC_INSTALL_DIR}
+                --with-cc=gcc 
+                --with-cxx=g++ 
+                --with-fc=0 
+                --download-f2cblaslapack 
+                --download-mpich
+            BUILD_COMMAND make PETSC_DIR=${PETSC_SOURCE_DIR} PETSC_ARCH=arch-linux-c-debug all -j${N}
+            )
+    add_custom_target(
+        Rescan_PETSC
+        ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} --fresh
+        DEPENDS PETSC
+        )
+    pkg_search_module(PETSC IMPORTED_TARGET PETSc)
+    message("Rescanning and rebuilding cmake")            
+else()
+    message("PETSC installed and PETSC version ${PETSC_VERSION} found")    
+    add_custom_target(Rescan_PETSC)
+    file(REMOVE_RECURSE ${PETSC_SOURCE_DIR})
 endif()
 
 
@@ -126,7 +175,7 @@ link_directories(${ROOT_INSTALL_DIR}/lib/)
 add_executable(
     ${Project} src/main.cpp  ${version_file}
     )
-add_dependencies(${Project} Rescan)    
+add_dependencies(${Project} Rescan Rescan_PETSC)    
 add_executable(
     vtkExample src/sources/write.cpp
 )
@@ -136,13 +185,16 @@ add_subdirectory(src)
 target_link_directories(vtkExample PUBLIC src/)
 
 target_link_libraries(vtkExample PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
-target_link_libraries(
-    ${Project} 
-    PUBLIC ${VTK_LIBRARIES} 
-    PUBLIC ${ProjectLib}
-    PUBLIC ${ARMADILLO_LIBRARIES}
-    PUBLIC ${ROOT_LIBRARIES}
-    )
+if(PETSC_FOUND)
+    target_link_libraries(
+        ${Project} 
+        PUBLIC ${VTK_LIBRARIES} 
+        PUBLIC ${ProjectLib}
+        PUBLIC ${ARMADILLO_LIBRARIES}
+        PUBLIC ${ROOT_LIBRARIES}
+        PkgConfig::PETSC
+        )
+endif()
 
 vtk_module_autoinit(
   TARGETS vtkExample
