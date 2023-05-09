@@ -7,19 +7,19 @@ set(Sources
 file(GLOB FVMSources "FVM/*.*")
   
 add_executable(${ProjectTest} ${Sources} ${FVMSources})
-add_dependencies(${ProjectTest} Rescan Rescan_PETSC)
 
-# if(PETSC_FOUND)
-    target_link_libraries(
-        ${ProjectTest}
-        PUBLIC gtest_main
-        PUBLIC ${CMAKE_PROJECT_NAME}_lib
-        PUBLIC ${ARMADILLO_LIBRARIES}
-        PUBLIC ${VTK_LIBRARIES}
-        PUBLIC ${ROOT_LIBRARIES}
-        INTERFACE PkgConfig::PETSC
+if(PETSC_FOUND)
+target_link_libraries(
+    ${ProjectTest}
+    PUBLIC gtest_main
+    PUBLIC ${CMAKE_PROJECT_NAME}_lib
+    PUBLIC ${ARMADILLO_LIBRARIES}
+    PUBLIC ${VTK_LIBRARIES}
+    PUBLIC ${ROOT_LIBRARIES}
+    PkgConfig::PETSC
     )
-# endif()
+    endif()
+add_dependencies(${ProjectTest} Rescan Rescan_PETSC)
 
 add_test(
     NAME ${ProjectTest}

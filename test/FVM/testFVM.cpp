@@ -18,6 +18,7 @@
 #include <TAxis.h>
 #include <Math/Math.h>
 #include <Math/GenVector/VectorUtil.h>
+#include <petsc.h>
 
 // User defined headers
 #include <version.h>

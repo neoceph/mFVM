@@ -14,7 +14,7 @@
 #include <vtkNew.h>
 #include <vtkXMLStructuredGridWriter.h>
 #include "TCanvas.h"
-
+#include <petsc.h>
 
 // User defined headers
 #include <version.h>

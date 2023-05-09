@@ -5,6 +5,7 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/src"
+                "${workspaceFolder}/extLibs"
             ],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }

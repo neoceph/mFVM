@@ -185,6 +185,7 @@ add_subdirectory(src)
 target_link_directories(vtkExample PUBLIC src/)
 
 target_link_libraries(vtkExample PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
+
 if(PETSC_FOUND)
     target_link_libraries(
         ${Project} 
