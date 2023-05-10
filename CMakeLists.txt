@@ -40,15 +40,6 @@ set(ROOT_BUILD_TYPE "RELEASE")
 
 # setting variables for PETSC
 
-# set(PETSC_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/src")
-# set(PETSC_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/install")
-# set(PETSC_BUILD_TYPE "RELEASE")
-# set(PETSC_CONFIGURE_COMMAND "./configure")
-# set(PETSC_DIR ${PETSC_INSTALL_DIR})
-# set(PKG_CONFIG_PATH ${PETSC_INSTALL_DIR}/lib/pkgconfig)
-# set(ENV{PKG_CONFIG_PATH} ${PETSC_INSTALL_DIR}/lib/pkgconfig)
-
-
 set(PETSC_SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/src")
 set(PETSC_INSTALL_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/install")
 set(PETSC_REPO "https://gitlab.com/petsc/petsc.git")
