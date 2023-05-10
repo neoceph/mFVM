@@ -45,10 +45,11 @@ protected:
     testInputProcessor->eastBoundaryTemperature = 200.0;
     testInputProcessor->heatFlux = 1000e3; // W/m^21
     // testInputProcessor->nodeNumbers = {150, 250, 450}; // this settings worked for the largest part that run on the desktop ubuntu
-    // testInputProcessor->nodeNumbers = {50, 50, 150};
+    testInputProcessor->nodeNumbers = {50, 50, 50};
     // testInputProcessor->domainDimensions = {2.5, 2.5, 4.5}; // original dimensions of the NIST Part
-    testInputProcessor->nodeNumbers = {250, 250, 25};
-    testInputProcessor->domainDimensions = {2.5, 2.5, 0.25}; // reduced dimensions along z-direction of the NIST Part
+    testInputProcessor->domainDimensions = {2.5, 2.5, 2.5}; // original dimensions of the NIST Part
+    // testInputProcessor->nodeNumbers = {250, 250, 25};
+    // testInputProcessor->domainDimensions = {2.5, 2.5, 0.25}; // reduced dimensions along z-direction of the NIST Part
     testInputProcessor->stateVariables = {
                 {"SolidPhase", 0}};                
 
@@ -96,7 +97,7 @@ TEST_F(LargePartTest, vtkLargePart)
 
     for (int i=0; i<testMesh->totalCells; i++)
     {
-        coordinate[0] = testMesh->cells[0].coordinate[0];
+        coordinate[0] = testMesh->cells[i].coordinate[0];
         coordinate[1] = testMesh->cells[i].coordinate[1];
         coordinate[2] = testMesh->cells[i].coordinate[2];
 
