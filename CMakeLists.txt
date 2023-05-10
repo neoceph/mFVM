@@ -40,13 +40,22 @@ set(ROOT_BUILD_TYPE "RELEASE")
 
 # setting variables for PETSC
 
-set(PETSC_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/src")
-set(PETSC_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/install")
-set(PETSC_BUILD_TYPE "RELEASE")
-set(PETSC_CONFIGURE_COMMAND "./configure")
-set(PETSC_DIR ${PETSC_INSTALL_DIR})
-set(PKG_CONFIG_PATH ${PETSC_INSTALL_DIR}/lib/pkgconfig)
+# set(PETSC_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/src")
+# set(PETSC_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extLibs/petsc/install")
+# set(PETSC_BUILD_TYPE "RELEASE")
+# set(PETSC_CONFIGURE_COMMAND "./configure")
+# set(PETSC_DIR ${PETSC_INSTALL_DIR})
+# set(PKG_CONFIG_PATH ${PETSC_INSTALL_DIR}/lib/pkgconfig)
+# set(ENV{PKG_CONFIG_PATH} ${PETSC_INSTALL_DIR}/lib/pkgconfig)
+
+
+set(PETSC_SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/src")
+set(PETSC_INSTALL_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/install")
+set(PETSC_REPO "https://gitlab.com/petsc/petsc.git")
+set(PETSC_BUILD_TYPE "release")
+set(PETSC_GIT_TAG "release")
 set(ENV{PKG_CONFIG_PATH} ${PETSC_INSTALL_DIR}/lib/pkgconfig)
+
 
 ############ Find Package Stuffs########################################################
 ########################################################################################
@@ -97,34 +106,27 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC IMPORTED_TARGET PETSc)
 
 if(NOT PETSC_FOUND)
-    ExternalProject_Add(
-            PETSC
-            GIT_REPOSITORY https://gitlab.com/petsc/petsc.git
-            GIT_TAG release
-            SOURCE_DIR ${PETSC_SOURCE_DIR}
-            BINARY_DIR ${PETSC_SOURCE_DIR}
-            CONFIGURE_COMMAND ./configure -E 
-                --prefix=${PETSC_INSTALL_DIR}
-                --with-cc=gcc 
-                --with-cxx=g++ 
-                --with-fc=0 
-                --download-f2cblaslapack 
-                --download-mpich
-            BUILD_COMMAND make PETSC_DIR=${PETSC_SOURCE_DIR} PETSC_ARCH=arch-linux-c-debug all -j${N}
-            )
-    add_custom_target(
-        Rescan_PETSC
-        ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} --fresh
-        DEPENDS PETSC
+    file(MAKE_DIRECTORY ${PETSC_SOURCE_DIR})
+    execute_process(
+        COMMAND echo "Starting the PETSc Cloning from gitlab"
+        COMMAND git clone -b ${PETSC_GIT_TAG} ${PETSC_REPO} ./src
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/extLibs/petsc 
         )
-    pkg_search_module(PETSC IMPORTED_TARGET PETSc)
-    message("Rescanning and rebuilding cmake")            
-else()
-    message("PETSC installed and PETSC version ${PETSC_VERSION} found")    
-    add_custom_target(Rescan_PETSC)
+    execute_process(
+        COMMAND ./configure --prefix=${PETSC_INSTALL_DIR} --with-cc=gcc --with-cxx=g++ --with-fc=0 --download-f2cblaslapack --download-mpich
+        WORKING_DIRECTORY ${PETSC_SOURCE_DIR}
+        )    
+    execute_process(
+        COMMAND make PETSC_DIR=${PETSC_SOURCE_DIR} PETSC_ARCH=arch-linux-c-debug all
+        WORKING_DIRECTORY ${PETSC_SOURCE_DIR}
+        )    
+    execute_process(
+        COMMAND make PETSC_DIR=${PETSC_SOURCE_DIR} PETSC_ARCH=arch-linux-c-debug all install
+        WORKING_DIRECTORY ${PETSC_SOURCE_DIR}
+        )
     file(REMOVE_RECURSE ${PETSC_SOURCE_DIR})
+    pkg_search_module(PETSC IMPORTED_TARGET PETSc)
 endif()
-
 
 
 ############ CPack and Git Versioning ##################################################
@@ -175,7 +177,7 @@ link_directories(${ROOT_INSTALL_DIR}/lib/)
 add_executable(
     ${Project} src/main.cpp  ${version_file}
     )
-add_dependencies(${Project} Rescan Rescan_PETSC)    
+add_dependencies(${Project} Rescan)
 add_executable(
     vtkExample src/sources/write.cpp
 )
@@ -186,8 +188,7 @@ target_link_directories(vtkExample PUBLIC src/)
 
 target_link_libraries(vtkExample PUBLIC ${VTK_LIBRARIES} ${ProjectLib})
 
-if(PETSC_FOUND)
-    target_link_libraries(
+target_link_libraries(
         ${Project} 
         PUBLIC ${VTK_LIBRARIES} 
         PUBLIC ${ProjectLib}
@@ -195,7 +196,7 @@ if(PETSC_FOUND)
         PUBLIC ${ROOT_LIBRARIES}
         PUBLIC PkgConfig::PETSC
         )
-endif()
+
 
 vtk_module_autoinit(
   TARGETS vtkExample

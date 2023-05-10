@@ -19,7 +19,7 @@ target_link_libraries(
     PkgConfig::PETSC
     )
     endif()
-add_dependencies(${ProjectTest} Rescan Rescan_PETSC)
+add_dependencies(${ProjectTest} Rescan)
 
 add_test(
     NAME ${ProjectTest}
