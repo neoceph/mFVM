@@ -17,6 +17,9 @@ import json
 from datetime import datetime
 
 
+def setup(app):
+    app.add_stylesheet('css/custom.css')
+
 # -- Project information -----------------------------------------------------
 master_doc = 'index'
 with open("../../CMakeSetup.json", "r") as jsonfile:
