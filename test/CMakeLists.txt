@@ -1,9 +1,10 @@
 set(ProjectTest ${CMAKE_PROJECT_NAME}_Tests)
 
-set(Sources
-    ExampleTests.cpp
-)
+# set(Sources
+#     ExampleTests.cpp
+# )
 
+file(GLOB Sources "*.cpp")
 file(GLOB FVMSources "FVM/*.*")
   
 add_executable(${ProjectTest} ${Sources} ${FVMSources})
