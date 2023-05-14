@@ -13,12 +13,10 @@ It solves the Navier-Stokes equation and Energy equation to calculate the temper
    :maxdepth: 2
    :caption: Contents:
 
-1. :doc:`theories_equation`
+.. 1. :doc:`theories_equation`
 
-.. .. include:: theories_equation.rst
+.. include:: theories_equation.rst
 
-
-.. _my-reference-label:
 
 * :ref:`genindex`
 * :ref:`modindex`

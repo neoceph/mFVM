@@ -4,7 +4,6 @@ Theories and Equations
 
 **Discretization of the diffusion equation**
 
-:ref:`Boundary Condition<boundary-conditions>`
 The steady diffusion equation is given by:
 
 .. math::
@@ -35,7 +34,7 @@ Rearranging the terms to separate the independent variables
 .. math::
       - \left(\frac{\Gamma_w A_w}{dx_{WP}}\right)\phi_W + \left(\frac{\Gamma_e A_e}{dx_{PE}} + \frac{\Gamma_w A_w}{dx_{WP}} - S_P \right)\phi_P - \left(\frac{\Gamma_e A_e}{dx_{PE}}\right)\phi_E = S_u
       :label: eq:pfy
-.. _boundary-conditions:
+
 Boundary Conditions
 ^^^^^^^^^^^^^^^^^^^
 On the west boundary, there isn't any control volume to the west, and hence the boundary needs a special treatment in estimating the flux on the west face of the control volume located at the west boundary.
