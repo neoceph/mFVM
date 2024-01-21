@@ -10,12 +10,7 @@ It solves the Navier-Stokes equation and Energy equation to calculate the temper
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-.. 1. :doc:`theories_equation`
-
-.. include:: theories_equation.rst
+   theories/theories_equation.rst
 
 
 * :ref:`genindex`
