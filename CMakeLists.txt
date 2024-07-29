@@ -44,7 +44,7 @@ set(PETSC_SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/src")
 set(PETSC_INSTALL_DIR "${CMAKE_SOURCE_DIR}/extLibs/petsc/install")
 set(PETSC_REPO "https://gitlab.com/petsc/petsc.git")
 set(PETSC_BUILD_TYPE "release")
-set(PETSC_GIT_TAG "release")
+set(PETSC_GIT_TAG "v3.19.6")
 set(ENV{PKG_CONFIG_PATH} ${PETSC_INSTALL_DIR}/lib/pkgconfig)
 
 
@@ -70,7 +70,7 @@ if(NOT ROOT_FOUND)
     ExternalProject_Add(
         ROOT
         GIT_REPOSITORY https://github.com/root-project/root.git
-        GIT_TAG v6-28-02
+        GIT_TAG v6-32-00
         SOURCE_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/src"
         BINARY_DIR "${CMAKE_SOURCE_DIR}/extLibs/root/build"
         CMAKE_ARGS 
